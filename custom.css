@@ -1,0 +1,554 @@
+/* General Form Styling */
+.wavss-form {
+  max-width: 450px; /* Limit form width */
+  margin: 20px auto; /* Center form horizontally */
+  padding: 25px;
+  background-color: #f9f9f9; /* Light background for the form */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Form Group Styling (Label + Input container) */
+.wavss-form .form-group {
+  margin-bottom: 20px; /* Space between form groups */
+}
+
+/* Label Styling */
+.wavss-form label {
+  display: block; /* Ensure label is on its own line */
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+  font-size: 0.95em;
+}
+
+/* Input Field Styling */
+.wavss-form input[type="text"],
+.wavss-form input[type="password"],
+.wavss-form input[type="email"] {
+  width: 100%; /* Make inputs fill container */
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Include padding and border in element's total width/height */
+  font-size: 1em;
+  transition: border-color 0.3s ease; /* Smooth transition for focus */
+}
+
+.wavss-form input[type="text"]:focus,
+.wavss-form input[type="password"]:focus,
+.wavss-form input[type="email"]:focus {
+  border-color: #007bff; /* Highlight border on focus */
+  outline: none; /* Remove default browser outline */
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25); /* Subtle glow on focus */
+}
+
+/* Input Placeholder Styling */
+.wavss-form input::placeholder {
+  color: #999;
+  font-size: 0.9em;
+}
+
+/* Form Actions (Button container) */
+.wavss-form .form-actions {
+  margin-top: 25px;
+  text-align: center; /* Center buttons */
+}
+
+/* General Button Styling */
+.wavss-form .button {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+  margin: 0 10px; /* Space between buttons */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Primary Button Styling (Register) */
+.wavss-form .button-primary {
+  background-color: #007bff; /* Primary action color */
+  color: white;
+}
+
+.wavss-form .button-primary:hover {
+  background-color: #0056b3;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Secondary Button Styling (Reset) */
+.wavss-form .button-secondary {
+  background-color: #6c757d; /* Secondary action color */
+  color: white;
+}
+
+.wavss-form .button-secondary:hover {
+  background-color: #5a6268;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Style Adjustments for Parent Container in register.php (if needed) */
+/* Assuming the form is inside <div class="textbox2"> as seen in other pages */
+#midrow .textbox2 {
+  /* Adjust padding or background if the form's styling conflicts */
+  /* Example: padding: 0; background: none; */
+}
+
+/* About Page Specific Styles */
+
+/* Wrapper for the content sections */
+.about-content-wrapper {
+  padding: 5px 0; /* Add some vertical padding */
+}
+
+/* Style for each content section */
+.about-section {
+  margin-bottom: 5px; /* Space below each section */
+  line-height: 1.6; /* Improve text readability */
+  color: #555; /* Slightly softer text color */
+}
+
+/* Optional: Add a card-like appearance to sections */
+.about-section.card {
+  background-color: #fdfdfd; /* Slightly off-white background */
+  padding: 5px 8px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Styling for section headings */
+.about-section h3 {
+  color: #0056b3; /* Use a color consistent with primary actions */
+  margin-top: 0; /* Remove default top margin */
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e0e0e0; /* Underline effect for heading */
+  font-size: 1.4em;
+}
+
+/* Styling for paragraphs within sections */
+.about-section p {
+  margin-bottom: 5px; /* Space between paragraphs */
+}
+
+/* Emphasize specific text elements */
+.about-section strong {
+  color: #333;
+}
+
+.about-section em {
+  color: #777;
+  font-style: italic;
+}
+
+/* Simple horizontal rule to divide sections */
+hr.section-divider {
+  border: 0;
+  height: 0px;
+  background-color: #ddd;
+  margin: 3px auto; /* Space above and below the divider */
+  width: 80%; /* Make it slightly shorter than full width */
+}
+
+/* Ensure the main content area doesn't stretch too wide on large screens */
+#midrow .center {
+  max-width: 900px; /* Adjust as needed */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Adjustments for the existing title bar */
+#toprowsub h2 {
+  color: #333; /* Ensure title color is readable */
+  font-size: 1.8em; /* Make title slightly larger */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Optional subtle shadow */
+}
+
+/* --- Crawler Page Specific Styles (Add to custom.css) --- */
+
+/* Style the main form container on the Crawler page */
+#midrow .textbox2 form#form1 { /* More specific selector */
+  max-width: 550px; /* Consistent width with other forms */
+  margin: 20px auto; /* Center form */
+  padding: 25px 30px;
+  background-color: #fdfdfd; /* Consistent light background */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  text-align: left; /* Align text to left/start */
+}
+
+/* Style the label paragraph "Enter URL to crawl:" */
+#midrow .textbox2 form#form1 p:first-of-type {
+  margin-bottom: 8px;
+  font-weight: 600; /* Bold label */
+  color: #343a40;
+  font-size: 0.95em;
+}
+
+/* Style the URL input field container paragraph */
+#midrow .textbox2 form#form1 p:nth-of-type(2) {
+   margin-bottom: 20px; /* Space below input */
+}
+
+/* Style the URL input field itself */
+#midrow .textbox2 form#form1 input[name="urlToCrawl"] {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+/* Focus style for the URL input */
+#midrow .textbox2 form#form1 input[name="urlToCrawl"]:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+/* Style the button container paragraph */
+#midrow .textbox2 form#form1 p:last-of-type {
+  text-align: center; /* Center button */
+  margin-top: 25px;
+}
+
+/* Style the "Start Crawl" button */
+#midrow .textbox2 form#form1 input[type="submit"].button {
+  display: inline-block;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 500;
+  margin: 0 5px;
+  min-width: 100px;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  /* Override original style.css image backgrounds */
+  background-image: none;
+  background-color: #007bff; /* Primary blue */
+  color: white;
+  text-align: center;
+}
+#midrow .textbox2 form#form1 input[type="submit"].button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+#midrow .textbox2 form#form1 input[type="submit"].button:active {
+   transform: translateY(1px);
+}
+
+
+/* Styling for the Status and Results divs below the form */
+/* Apply styles directly inside the main content container */
+#midrow .textbox2 #status,
+#midrow .textbox2 #urlsFound {
+  margin: 25px auto 15px auto; /* Center and add spacing */
+  padding: 15px 20px;
+  border: 1px solid #e9ecef;
+  border-radius: 5px;
+  background-color: #f8f9fa; /* Light background */
+  min-height: 50px;
+  line-height: 1.5;
+  font-size: 0.95em;
+  color: #495057;
+  max-width: 700px; /* Optional: Limit width */
+  text-align: left; /* Align text left */
+}
+
+/* Style bold text within status/results divs */
+#midrow .textbox2 #status b,
+#midrow .textbox2 #urlsFound b {
+  font-weight: 600;
+  color: #343a40;
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* Style paragraphs possibly generated inside results */
+#midrow .textbox2 #status p,
+#midrow .textbox2 #urlsFound p {
+  margin-bottom: 10px;
+}
+
+/* --- Scanner Page Specific Styles (Add to custom.css) --- */
+
+/* Style the main form container on the Scanner page */
+#midrow .textbox2 form#form1 { /* More specific selector */
+  max-width: 550px; /* Consistent width */
+  margin: 20px auto; /* Center form */
+  padding: 25px 30px;
+  background-color: #fdfdfd;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  text-align: left;
+}
+
+/* Style the label paragraph "Enter URL to scan:" */
+#midrow .textbox2 form#form1 p:first-of-type {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #343a40;
+  font-size: 0.95em;
+}
+
+/* Style the URL input field container paragraph */
+#midrow .textbox2 form#form1 p:nth-of-type(2) {
+   margin-bottom: 10px; /* Space below input */
+}
+
+/* Style the URL input field itself */
+#midrow .textbox2 form#form1 input[name="urlToScan"] {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  margin-bottom: 5px; /* Small space before "Options" link */
+}
+
+/* Focus style for the URL input */
+#midrow .textbox2 form#form1 input[name="urlToScan"]:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+/* Style the "Options" link */
+#midrow .textbox2 form#form1 a[href="javascript:sizeTbl('block')"] {
+  font-size: 0.9em;
+  font-weight: 500;
+  color: #007bff; /* Use standard link color */
+  text-decoration: underline;
+  display: inline-block; /* Allow margin */
+  margin-bottom: 15px; /* Space below link */
+}
+#midrow .textbox2 form#form1 a[href="javascript:sizeTbl('block')"]:hover {
+  color: #0056b3;
+}
+
+/* Style the Options Panel (div#tbl) */
+#midrow .textbox2 form#form1 div#tbl {
+  margin-top: 15px;
+  padding: 20px 25px;
+  background-color: #f8f9fa; /* Light background for options */
+  border: 1px solid #e9ecef;
+  border-radius: 5px;
+  margin-bottom: 20px; /* Space below options panel */
+}
+
+/* Style the "Check/Uncheck All" link within options */
+#midrow .textbox2 form#form1 div#tbl a[href^="javascript:checkedAll"] {
+  font-size: 0.9em;
+  font-weight: 500;
+  color: #007bff;
+  text-decoration: underline;
+  display: inline-block;
+  margin-bottom: 15px; /* Space below link */
+}
+#midrow .textbox2 form#form1 div#tbl a[href^="javascript:checkedAll"]:hover {
+   color: #0056b3;
+}
+
+/* Style the tables inside the options panel */
+#midrow .textbox2 form#form1 div#tbl table {
+  width: 100%; /* Make tables use available width */
+  border: none; /* Remove HTML border attribute effect */
+  border-collapse: collapse;
+  margin-bottom: 15px; /* Space between tables */
+}
+
+#midrow .textbox2 form#form1 div#tbl table td {
+  padding: 6px 4px; /* Padding within cells */
+  vertical-align: middle; /* Align checkbox and text vertically */
+  border: none; /* Remove cell borders */
+}
+
+/* Style checkboxes */
+#midrow .textbox2 form#form1 div#tbl input[type="checkbox"] {
+  margin-right: 8px;
+  vertical-align: middle; /* Align checkbox */
+  width: auto; /* Override default width if needed */
+}
+
+/* Style labels associated with checkboxes (if they existed) */
+/* Since there are no <label> tags, we style the text node's container (td) */
+#midrow .textbox2 form#form1 div#tbl table td:last-child {
+   font-size: 0.95em;
+   color: #333;
+}
+
+/* Style the "Start Scan" button container */
+#midrow .textbox2 form#form1 p:last-of-type {
+  text-align: center;
+  margin-top: 25px;
+}
+
+/* Style the "Start Scan" button */
+#midrow .textbox2 form#form1 input[type="submit"].button {
+  display: inline-block;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 500;
+  margin: 0 5px;
+  min-width: 100px;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  /* Override original style.css image backgrounds */
+  background-image: none;
+  background-color: #007bff; /* Primary blue */
+  color: white;
+  text-align: center;
+}
+#midrow .textbox2 form#form1 input[type="submit"].button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+#midrow .textbox2 form#form1 input[type="submit"].button:active {
+   transform: translateY(1px);
+}
+
+
+/* Styling for the Status and Scan Status divs */
+#midrow .textbox2 #status,
+#midrow .textbox2 #scanstatus {
+  margin: 25px auto 15px auto; /* Center and add spacing */
+  padding: 15px 20px;
+  border: 1px solid #e9ecef;
+  border-radius: 5px;
+  background-color: #f8f9fa; /* Light background */
+  min-height: 50px;
+  line-height: 1.5;
+  font-size: 0.95em;
+  color: #495057;
+  max-width: 700px; /* Optional: Limit width */
+  text-align: left; /* Align text left */
+}
+
+/* Style bold text within status/scanstatus divs */
+#midrow .textbox2 #status b,
+#midrow .textbox2 #scanstatus b {
+  font-weight: 600;
+  color: #343a40;
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* Style paragraphs possibly generated inside results */
+#midrow .textbox2 #status p,
+#midrow .textbox2 #scanstatus p {
+  margin-bottom: 10px;
+}
+
+/* Style vulnerability details possibly generated inside #scanstatus */
+#midrow .textbox2 #scanstatus p b { /* Vulnerability Type */
+  display: inline; /* Keep vuln type inline */
+  margin-bottom: 0;
+  color: #dc3545; /* Red color for vulnerability type maybe */
+}
+
+/* --- Scan History Table Styles (Add to custom.css) --- */
+
+/* Target the table specifically within its container */
+#midrow .textbox2 table {
+  width: 100%; /* Make table fill container width */
+  border-collapse: collapse; /* Remove gaps between cell borders */
+  margin-top: 20px; /* Space above the table */
+  margin-bottom: 20px; /* Space below the table */
+  border: 1px solid #dee2e6; /* Light grey outer border */
+  font-size: 0.95em; /* Slightly smaller font for table data */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04); /* Subtle shadow */
+}
+
+/* Style table header (th) and table data (td) cells */
+#midrow .textbox2 th,
+#midrow .textbox2 td {
+  border: 1px solid #e9ecef; /* Lighter internal cell borders */
+  padding: 10px 12px; /* Padding inside cells */
+  text-align: left; /* Default text alignment */
+  vertical-align: middle; /* Align content vertically */
+}
+
+/* Style the header row specifically */
+#midrow .textbox2 thead th { /* More specific selector using thead */
+  background-color: #f8f9fa; /* Light grey background for header */
+  font-weight: 600; /* Bolder header text */
+  color: #495057; /* Dark grey text color */
+  border-bottom-width: 2px; /* Thicker border below header */
+}
+
+/* Style the data cells */
+#midrow .textbox2 tbody td { /* More specific selector using tbody */
+  color: #333; /* Standard text color */
+}
+
+/* Center specific columns by index (adjust if columns change) */
+/* Column 1: ID */
+#midrow .textbox2 td:nth-child(1) {
+  text-align: center;
+  width: 5%; /* Example width */
+}
+/* Column 4: No. Vulnerabilities */
+#midrow .textbox2 td:nth-child(4) {
+  text-align: center;
+  width: 15%; /* Example width */
+}
+/* Column 5: Report Link */
+#midrow .textbox2 td:nth-child(5) {
+  text-align: center;
+  width: 10%; /* Example width */
+}
+/* Column 2: Start Time */
+#midrow .textbox2 td:nth-child(2) {
+   width: 25%; /* Example width */
+   white-space: nowrap; /* Prevent time wrapping */
+}
+/* Column 3: URL */
+#midrow .textbox2 td:nth-child(3) {
+  word-break: break-all; /* Allow long URLs to wrap */
+}
+
+
+/* Add striping for even rows */
+#midrow .textbox2 tbody tr:nth-child(even) td {
+  background-color: #fdfdfd; /* Very light grey for even rows */
+}
+
+/* Add hover effect for rows */
+#midrow .textbox2 tbody tr:hover td {
+  background-color: #e9ecef; /* Slightly darker grey on hover */
+}
+
+/* Style the "View Report" link inside the table */
+#midrow .textbox2 td a {
+  font-weight: 500; /* Make link slightly bolder */
+  color: #007bff; /* Use primary link color */
+  text-decoration: none; /* Remove underline */
+  padding: 3px 6px; /* Add some padding */
+  border-radius: 3px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#midrow .textbox2 td a:hover {
+  background-color: #007bff;
+  color: #ffffff; /* White text on hover */
+  text-decoration: none;
+}
+
+/* Style message paragraph if table is empty */
+#midrow .textbox2 p.form-message.info {
+   margin: 20px auto;
+   text-align: center;
+}

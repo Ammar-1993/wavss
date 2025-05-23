@@ -1,0 +1,7 @@
+06:47:10:0510 ,crawler, Connecting to database
+06:47:10:0510 ,crawler, Generating next test ID
+06:47:10:0510 ,crawler, Next ID generated is 1
+06:47:10:0510 ,crawler, Successfully executed query: INSERT into tests(id,status,numUrlsFound,type,num_requests_sent,start_timestamp,finish_timestamp,scan_finished,url,username,urls_found) VALUES(1,'Creating profile for new crawl...',0,'crawl',0,1747021630,1747021630,0,'https://maharatech.gov.eg/','Ammar','') 
+06:47:10:0510 ,crawler, Calling AJAX function beginCrawl()
+06:47:11:0511 ,begin_crawl, Connecting to database
+06:47:11:0511 ,begin_crawl, Instantiating crawler

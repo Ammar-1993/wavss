@@ -1,0 +1,8 @@
+06:47:49:0549 ,scanner, Connecting to database
+06:47:49:0549 ,scanner, Generating next test ID
+06:47:49:0549 ,scanner, Next ID generated is 2
+06:47:49:0549 ,scanner, Successfully executed query: INSERT into tests(id,status,numUrlsFound,type,num_requests_sent,start_timestamp,finish_timestamp,scan_finished,url,username,urls_found) VALUES(2,'Creating profile for new scan...',0,'scan',0,1747021669,1747021669,0,'https://maharatech.gov.eg/','Ammar','') 
+06:47:49:0549 ,scanner, Calling AJAX function beginCrawl()
+06:47:50:0550 ,begin_scan, Connecting to database
+06:47:50:0550 ,begin_scan, URL to scan: https://maharatech.gov.eg/
+06:47:50:0550 ,begin_scan, Instantiating crawler
