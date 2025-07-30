@@ -71,13 +71,7 @@ WAVSS is a comprehensive, automated web-based vulnerability scanner designed to 
 - API support for integration with external security tools.
 - Mobile-friendly interface for scanning on-the-go.
 - Real-time threat intelligence feed integration.
-
----
-
-## Contributing
-
-Contributions to WAVSS are welcome! Please fork the repository and submit pull requests with detailed descriptions. For major changes, please open an issue first to discuss your ideas.
-
+  
 ---
 
 ## Project Contributors and Supervision
