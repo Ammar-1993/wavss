@@ -53,7 +53,7 @@ $log->lwrite('Connecting to database');
 $connectionFlag = connectToDb($db);
 
 isset($_POST['specifiedUrl']) ? $urlToScan = $_POST['specifiedUrl'] : $urlToScan = '';
-isset($_POST['testId']) ? $testId = $_POST['testId'] : $testId = 0;
+isset($_POST['testId']) ? $testId = (int)$_POST['testId'] : $testId = 0;
 isset($_POST['username']) ? $username = $_POST['username'] : $username = 'User';
 isset($_POST['email']) ? $email = $_POST['email'] : $email = 'wavss@gmail.com';//admin address
 isset($_POST['testCases']) ? $testCases = $_POST['testCases'] : $testCases = '';//admin address
@@ -70,8 +70,11 @@ if(stripos($urlToScan, 'http') !== 0)
 
 $log->lwrite("URL to scan: $urlToScan");
 
-$query = "UPDATE tests SET status = 'Preparing Crawl for $urlToScan' WHERE id = $testId;"; 
-$db->query($query);
+$query = "UPDATE tests SET status = ? WHERE id = ?";
+$stmt = $db->prepare($query);
+$statusMsg = "Preparing Crawl for $urlToScan";
+$stmt->bind_param('si', $statusMsg, $testId);
+$stmt->execute();
 
 //Check if crawling is enabled
 $crawlUrlFlag = false;
@@ -233,8 +236,10 @@ if(stristr($testCases,' emailpdf ') !== false)
 	updateStatus($db, "Finished emailing PDF report...", $testId);
 }
 
-$query = "UPDATE tests SET scan_finished = 1 WHERE id = $testId;"; 
-$result = $db->query($query);
+$query = "UPDATE tests SET scan_finished = 1 WHERE id = ?";
+$stmt = $db->prepare($query);
+$stmt->bind_param('i', $testId);
+$result = $stmt->execute();
 
 if(stristr($testCases,' emailpdf ') !== false)
 	updateStatus($db, "Scan is complete! The report has been emailed to you and is also in your scan history.", $testId);
