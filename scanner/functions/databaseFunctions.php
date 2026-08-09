@@ -1,9 +1,14 @@
 <?php
 
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . '/../../');
+$dotenv->safeLoad();
+
 //Connects to database. Returns true on success, False on failure.
 function connectToDb(&$db)
 {
-	$db = new mysqli('db', 'root', '12345678', 'wavssv3_db');
+	$db = new mysqli(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASSWORD'), getenv('DB_NAME'));
 	if (mysqli_connect_errno()) {
 		return false;
 	}

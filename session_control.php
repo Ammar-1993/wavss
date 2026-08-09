@@ -27,8 +27,11 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 	}
 
 	if (connectToDb($db) && $continueLogin) {
-		$query = "SELECT * FROM users WHERE email = '$email' AND password = SHA1('$password')";
-		$result = $db->query($query);
+		$query = "SELECT * FROM users WHERE email = ? AND password = SHA1(?)";
+		$stmt = $db->prepare($query);
+		$stmt->bind_param('ss', $email, $password);
+		$stmt->execute();
+		$result = $stmt->get_result();
 		if ($result) {
 			$numRows = $result->num_rows;
 			if ($numRows == 0)
