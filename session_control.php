@@ -27,21 +27,36 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 	}
 
 	if (connectToDb($db) && $continueLogin) {
-		$query = "SELECT * FROM users WHERE email = ? AND password = SHA1(?)";
+		$query = "SELECT * FROM users WHERE email = ?";
 		$stmt = $db->prepare($query);
-		$stmt->bind_param('ss', $email, $password);
+		$stmt->bind_param('s', $email);
 		$stmt->execute();
 		$result = $stmt->get_result();
 		if ($result) {
 			$numRows = $result->num_rows;
-			if ($numRows == 0)
+			if ($numRows == 0) {
 				$loginMsg = 'Invalid email or password. Please try again';
-			else {
+			} else {
 				$row = $result->fetch_object();
-				$username = $row->username;
-				$_SESSION['username'] = $username;
-				$_SESSION['email'] = $email;
-				$loginMsg = 'You have successfully logged in';
+				$validPassword = false;
+
+				if (password_verify($password, $row->password)) {
+					$validPassword = true;
+				} elseif (preg_match('/^[a-f0-9]{40}$/i', $row->password) && sha1($password) === $row->password) {
+					$validPassword = true;
+					$newHash = password_hash($password, PASSWORD_ARGON2ID);
+					$updateStmt = $db->prepare("UPDATE users SET password = ? WHERE email = ?");
+					$updateStmt->bind_param('ss', $newHash, $email);
+					$updateStmt->execute();
+				}
+
+				if ($validPassword) {
+					$_SESSION['username'] = $row->username;
+					$_SESSION['email'] = $email;
+					$loginMsg = 'You have successfully logged in';
+				} else {
+					$loginMsg = 'Invalid email or password. Please try again';
+				}
 			}
 		} else {
 			$loginMsg = 'There was a problem checking your credentials. Please contact administrator if the problem persists';

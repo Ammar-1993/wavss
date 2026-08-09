@@ -53,7 +53,7 @@ if (isset($_SESSION['username'])) {
             $message = 'An account with this email already exists. Please try another email.';
           } else {
             // Insert new user into database
-            $hashedPassword = sha1($password);
+            $hashedPassword = password_hash($password, PASSWORD_ARGON2ID);
             $query = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
             $stmt->prepare($query);
             $stmt->bind_param('sss', $username, $hashedPassword, $email);
