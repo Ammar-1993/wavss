@@ -92,10 +92,6 @@
 
 /* Style Adjustments for Parent Container in register.php (if needed) */
 /* Assuming the form is inside <div class="textbox2"> as seen in other pages */
-#midrow .textbox2 {
-  /* Adjust padding or background if the form's styling conflicts */
-  /* Example: padding: 0; background: none; */
-}
 
 /* About Page Specific Styles */
 
