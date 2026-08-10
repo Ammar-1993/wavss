@@ -208,7 +208,7 @@ if (isset($_SESSION['username'])) {
 
 			$log->lwrite('Calling AJAX function beginCrawl()');
 			echo '<script type="text/javascript">';
-			echo "beginScan('$urlToScan','$testId','$username','$email', '$testCases');";
+			echo "beginScan(" . json_encode($urlToScan, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . "," . json_encode($testId, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . "," . json_encode($username, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . "," . json_encode($email, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . ", " . json_encode($testCases, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . ");";
 			echo '</script>';
 		} else
 			echo 'Please enter the URL first.';
