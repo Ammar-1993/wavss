@@ -16,6 +16,9 @@ if (isset($_GET['action'])) {
 
 //Check if user has just made a login attempt
 if (isset($_POST['email']) && isset($_POST['password'])) {
+	if (!csrf_verify($_POST['csrf_token'] ?? '')) {
+		die('CSRF token validation failed');
+	}
 	$email = $_POST['email'];
 	$password = $_POST['password'];
 

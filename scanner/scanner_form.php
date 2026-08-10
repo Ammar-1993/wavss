@@ -51,6 +51,7 @@ if (isset($_SESSION['username'])) {
 
 	<body>
 		<form id="form1" name="form1" method="post">
+			<input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
 			<p>Enter URL to scan:</p>
 			<p>
 				<label for="urlToScan"></label>
@@ -128,6 +129,9 @@ if (isset($_SESSION['username'])) {
 	<?php
 
 	if (isset($_POST['urlToScan'])) {
+		if (!csrf_verify($_POST['csrf_token'] ?? '')) {
+			die('CSRF token validation failed');
+		}
 		$testCases = ' '; //options
 		if (isset($_POST['rxss'])) $testCases .= $_POST['rxss'] . ' ';
 		if (isset($_POST['sxss'])) $testCases .= $_POST['sxss'] . ' ';
