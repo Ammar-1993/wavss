@@ -161,6 +161,28 @@ if (isset($_SESSION['username'])) {
 				return;
 			}
 
+			// Domain Ownership Verification Check
+			$parsedHost = parse_url($urlToScan, PHP_URL_HOST);
+			if (!$parsedHost) {
+				$parsedHost = parse_url("http://" . $urlToScan, PHP_URL_HOST);
+			}
+			
+			$isLocal = in_array(strtolower($parsedHost), ['localhost', '127.0.0.1', '::1', '[::1]']);
+			
+			if (!$isLocal) {
+				$verifyQuery = "SELECT id FROM domain_verifications WHERE username = ? AND domain = ? AND verified = 1";
+				$verifyStmt = $db->prepare($verifyQuery);
+				$verifyStmt->bind_param('ss', $username, $parsedHost);
+				$verifyStmt->execute();
+				$verifyRes = $verifyStmt->get_result();
+				
+				if ($verifyRes->num_rows == 0) {
+					echo "<p style='color:red;'>Error: You must prove ownership of the domain <b>" . htmlspecialchars($parsedHost) . "</b> before scanning it.</p>";
+					echo "<p><a href='verify_domain.php'>Click here to verify domain ownership</a></p>";
+					return;
+				}
+			}
+
 			$log->lwrite('Generating next test ID');
 			$nextId = generateNextTestId($db);
 
