@@ -1,3 +1,5 @@
 vendor/
 .env
 GEMINI.md
+wavssv3_db.sql
+wavssv3_db (1).sql
