@@ -2,6 +2,7 @@
 
 
 session_start();
+require_once(__DIR__ . '/csrf.php');
 $currentDir = './';
 require_once($currentDir . 'scanner/functions/databaseFunctions.php');
 ?>

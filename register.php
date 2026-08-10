@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once(__DIR__ . '/csrf.php');
 $currentDir = './';
 require_once($currentDir . 'scanner/functions/databaseFunctions.php');
 
@@ -11,6 +12,9 @@ if (isset($_SESSION['username'])) {
   $displayForm = false;
 } else {
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!csrf_verify($_POST['csrf_token'] ?? '')) {
+      die('CSRF token validation failed');
+    }
     // Assign POST values
     $username = isset($_POST['regusername']) ? $_POST['regusername'] : '';
     $password = isset($_POST['regpassword']) ? $_POST['regpassword'] : '';

@@ -20,6 +20,7 @@ if (isset($_SESSION['username'])) {
 
 	echo '<body>
 			<form id="form1" name="form1" method="post" >
+			  <input type="hidden" name="csrf_token" value="' . htmlspecialchars(csrf_token()) . '">
 			  <p>Enter URL to crawl:</p>
 			  <p>
 				<label for="urlToCrawl"></label>
@@ -31,6 +32,9 @@ if (isset($_SESSION['username'])) {
 			</form>';
 
 	if (isset($_POST['urlToCrawl'])) {
+		if (!csrf_verify($_POST['csrf_token'] ?? '')) {
+			die('CSRF token validation failed');
+		}
 		$urlToCrawl = trim($_POST['urlToCrawl']);
 		if (!empty($urlToCrawl)) {
 			$log = new Logger();

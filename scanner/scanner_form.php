@@ -51,6 +51,7 @@ if (isset($_SESSION['username'])) {
 
 	<body>
 		<form id="form1" name="form1" method="post">
+			<input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
 			<p>Enter URL to scan:</p>
 			<p>
 				<label for="urlToScan"></label>
@@ -128,6 +129,9 @@ if (isset($_SESSION['username'])) {
 	<?php
 
 	if (isset($_POST['urlToScan'])) {
+		if (!csrf_verify($_POST['csrf_token'] ?? '')) {
+			die('CSRF token validation failed');
+		}
 		$testCases = ' '; //options
 		if (isset($_POST['rxss'])) $testCases .= $_POST['rxss'] . ' ';
 		if (isset($_POST['sxss'])) $testCases .= $_POST['sxss'] . ' ';
@@ -155,6 +159,54 @@ if (isset($_SESSION['username'])) {
 				$log->lwrite('Error connecting to database');
 				echo 'Error connecting to database';
 				return;
+			}
+
+			// Domain Ownership Verification Check
+			$parsedHost = parse_url($urlToScan, PHP_URL_HOST);
+			if (!$parsedHost) {
+				$parsedHost = parse_url("http://" . $urlToScan, PHP_URL_HOST);
+			}
+			
+			$isLocal = in_array(strtolower($parsedHost), ['localhost', '127.0.0.1', '::1', '[::1]']);
+			
+			if (!$isLocal) {
+				$verifyQuery = "SELECT id FROM domain_verifications WHERE username = ? AND domain = ? AND verified = 1";
+				$verifyStmt = $db->prepare($verifyQuery);
+				$verifyStmt->bind_param('ss', $username, $parsedHost);
+				$verifyStmt->execute();
+				$verifyRes = $verifyStmt->get_result();
+				
+				if ($verifyRes->num_rows == 0) {
+					echo "<p style='color:red;'>Error: You must prove ownership of the domain <b>" . htmlspecialchars($parsedHost) . "</b> before scanning it.</p>";
+					echo "<p><a href='verify_domain.php'>Click here to verify domain ownership</a></p>";
+					return;
+				}
+			}
+
+			// Rate Limit: Concurrency (max 1 active scan per user)
+			$activeScanQuery = "SELECT id FROM tests WHERE username = ? AND type = 'scan' AND scan_finished = 0";
+			$activeScanStmt = $db->prepare($activeScanQuery);
+			$activeScanStmt->bind_param('s', $username);
+			$activeScanStmt->execute();
+			if ($activeScanStmt->get_result()->num_rows > 0) {
+				echo "<p style='color:red;'>Error: You already have an active scan running. Please wait for it to finish before starting a new one.</p>";
+				return;
+			}
+
+			// Rate Limit: Frequency (max 1 scan per 5 minutes per URL)
+			$recentScanQuery = "SELECT start_timestamp FROM tests WHERE username = ? AND url = ? ORDER BY start_timestamp DESC LIMIT 1";
+			$recentScanStmt = $db->prepare($recentScanQuery);
+			$recentScanStmt->bind_param('ss', $username, $urlToScan);
+			$recentScanStmt->execute();
+			$recentScanRes = $recentScanStmt->get_result();
+			if ($recentScanRes->num_rows > 0) {
+				$row = $recentScanRes->fetch_object();
+				$timeSince = time() - $row->start_timestamp;
+				if ($timeSince < 300) {
+					$remaining = 300 - $timeSince;
+					echo "<p style='color:red;'>Error: You scanned this URL recently. Please wait $remaining seconds before scanning it again.</p>";
+					return;
+				}
 			}
 
 			$log->lwrite('Generating next test ID');
