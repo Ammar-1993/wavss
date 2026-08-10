@@ -183,6 +183,32 @@ if (isset($_SESSION['username'])) {
 				}
 			}
 
+			// Rate Limit: Concurrency (max 1 active scan per user)
+			$activeScanQuery = "SELECT id FROM tests WHERE username = ? AND type = 'scan' AND scan_finished = 0";
+			$activeScanStmt = $db->prepare($activeScanQuery);
+			$activeScanStmt->bind_param('s', $username);
+			$activeScanStmt->execute();
+			if ($activeScanStmt->get_result()->num_rows > 0) {
+				echo "<p style='color:red;'>Error: You already have an active scan running. Please wait for it to finish before starting a new one.</p>";
+				return;
+			}
+
+			// Rate Limit: Frequency (max 1 scan per 5 minutes per URL)
+			$recentScanQuery = "SELECT start_timestamp FROM tests WHERE username = ? AND url = ? ORDER BY start_timestamp DESC LIMIT 1";
+			$recentScanStmt = $db->prepare($recentScanQuery);
+			$recentScanStmt->bind_param('ss', $username, $urlToScan);
+			$recentScanStmt->execute();
+			$recentScanRes = $recentScanStmt->get_result();
+			if ($recentScanRes->num_rows > 0) {
+				$row = $recentScanRes->fetch_object();
+				$timeSince = time() - $row->start_timestamp;
+				if ($timeSince < 300) {
+					$remaining = 300 - $timeSince;
+					echo "<p style='color:red;'>Error: You scanned this URL recently. Please wait $remaining seconds before scanning it again.</p>";
+					return;
+				}
+			}
+
 			$log->lwrite('Generating next test ID');
 			$nextId = generateNextTestId($db);
 
