@@ -3,3 +3,7 @@ vendor/
 GEMINI.md
 wavssv3_db.sql
 wavssv3_db (1).sql
+scanner/reports/*.pdf
+scanner/logs/*
+crawler/logs/*
+.php-cs-fixer.cache
