@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8084:80"
+    env_file:
+      - .env.docker
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:11
+    restart: always
+    env_file:
+      - .env.docker
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/seed.sql
+
+volumes:
+  db_data:
