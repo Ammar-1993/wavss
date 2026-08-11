@@ -116,23 +116,9 @@ $stmt = $db->prepare("SELECT * FROM domain_verifications WHERE username = ?");
 $stmt->bind_param('s', $username);
 $stmt->execute();
 $domains = $stmt->get_result();
+$pageTitle = 'WAVSS - Verify Domain Ownership';
+require_once($currentDir . 'templates/header.php');
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Verify Domain Ownership - WAVSS</title>
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    <link rel="stylesheet" type="text/css" href="custom.css" />
-</head>
-<body>
-    <div id="header">
-        <div class="center">
-            <div id="logo"><a href="#">WAVSS</a></div>
-            <div id="menu">
-                <?php require_once($currentDir . 'session_control.php'); ?>
-            </div>
-        </div>
-    </div>
     
     <div id="toprowsub">
         <div class="center">
@@ -189,5 +175,4 @@ $domains = $stmt->get_result();
             </div>
         </div>
     </div>
-</body>
-</html>
+<?php require_once($currentDir . 'templates/footer.php'); ?>
