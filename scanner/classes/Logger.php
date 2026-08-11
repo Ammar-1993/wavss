@@ -1,28 +1,31 @@
 <?php
 
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use Monolog\Logger as MonologLogger;
+use Monolog\Handler\RotatingFileHandler;
+
 class Logger{
 
 	private $logFile;
-	private $fp;
+	private $monologLogger = null;
 	
 	public function lfile($path) {
         $this->logFile = $path;
     }
 
     public function lwrite($message){
-	
-        if(!$this->fp) 
+        if(!$this->monologLogger) {
 			$this->lopen();
+        }
         $scriptName = pathinfo($_SERVER['PHP_SELF'], PATHINFO_FILENAME);
-        $time = date('H:i:s:ms');
-        fwrite($this->fp, "$time ,$scriptName, $message\n");
+        $this->monologLogger->info("$scriptName, $message");
     }
 
     private function lopen(){
-
-        $lfile = $this->logFile;
-        $today = date('Y-m-d');
-        $this->fp = fopen($lfile . '_' . $today . '.txt', 'a') or exit("Can't open $lfile!");
+        $this->monologLogger = new MonologLogger('wavss');
+        $handler = new RotatingFileHandler($this->logFile . '.txt', 14);
+        $handler->setFilenameFormat('{filename}_{date}', 'Y-m-d');
+        $this->monologLogger->pushHandler($handler);
     }
 }
-?>

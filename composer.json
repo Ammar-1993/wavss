@@ -2,7 +2,8 @@
     "require": {
         "vlucas/phpdotenv": "^5.6",
         "tecnickcom/tcpdf": "^6.6",
-        "simplehtmldom/simplehtmldom": "@dev"
+        "simplehtmldom/simplehtmldom": "@dev",
+        "monolog/monolog": "^3.10"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.95"
