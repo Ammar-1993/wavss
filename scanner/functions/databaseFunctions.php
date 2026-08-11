@@ -20,15 +20,19 @@ function connectToDb(&$db)
 //Returns true on success, False on failure.
 function updateStatus($db, $newStatus, $testId)
 {
-	$query = "UPDATE tests SET status = '$newStatus' WHERE id = $testId;";
-	$result = $db->query($query);
+	$stmt = $db->prepare("UPDATE tests SET status = ? WHERE id = ?");
+	$stmt->bind_param("si", $newStatus, $testId);
+	$result = $stmt->execute();
+	$stmt->close();
 	return $result;
 }
 
 function insertTestResult($db, $testId, $type, $method, $url, $attackStr)
 {
-	$query = "INSERT into test_results(test_id, type, method, url, attack_str) VALUES($testId,'$type','$method','$url','$attackStr')";
-	$result = $db->query($query);
+	$stmt = $db->prepare("INSERT into test_results(test_id, type, method, url, attack_str) VALUES(?,?,?,?,?)");
+	$stmt->bind_param("issss", $testId, $type, $method, $url, $attackStr);
+	$result = $stmt->execute();
+	$stmt->close();
 	return $result;
 }
 
@@ -52,7 +56,9 @@ function generateNextTestId($db)
 //Returns true on success, false on failure
 function incrementHttpRequests($db, $testId)
 {
-	$query = "UPDATE tests SET num_requests_sent = (num_requests_sent + 1) WHERE id = $testId";
-	$result = $db->query($query);
+	$stmt = $db->prepare("UPDATE tests SET num_requests_sent = (num_requests_sent + 1) WHERE id = ?");
+	$stmt->bind_param("i", $testId);
+	$result = $stmt->execute();
+	$stmt->close();
 	return $result;
 }

@@ -61,23 +61,31 @@ if (isset($_SESSION['username'])) {
 				$log->lwrite("Next ID generated is $nextId");
 				$testId = $nextId;
 				$now = time();
-				$query = "INSERT into tests(id,status,numUrlsFound,type,num_requests_sent,start_timestamp,finish_timestamp,scan_finished,url,username,urls_found) VALUES($nextId,'Creating profile for new crawl...',0,'crawl',0,$now,$now,0,'$urlToCrawl','$username','')";
-				$result = $db->query($query);
+				$query = "INSERT into tests(id,status,numUrlsFound,type,num_requests_sent,start_timestamp,finish_timestamp,scan_finished,url,username,urls_found) VALUES(?, 'Creating profile for new crawl...', 0, 'crawl', 0, ?, ?, 0, ?, ?, '')";
+				$stmt = $db->prepare($query);
+				$stmt->bind_param('iiiss', $nextId, $now, $now, $urlToCrawl, $username);
+				$result = $stmt->execute();
+				$stmt->close();
 				if (!$result) {
-					$log->lwrite("Problem executing query: $query ");
+					$log->lwrite("Problem executing query for new crawl.");
 					echo 'Problem inserting a new test into the database. Please try again.';
 					return;
 				} else {
-					$log->lwrite("Successfully executed query: $query ");
+					$log->lwrite("Successfully executed query for new crawl.");
 				}
 			}
 
 			updateStatus($db, 'Pending...', $testId);
 
-			$query = "UPDATE tests SET numUrlsFound = 0 WHERE id = $testId;";
-			$db->query($query);
-			$query = "UPDATE tests SET duration = 0 WHERE id = $testId;";
-			$db->query($query);
+			$stmt = $db->prepare("UPDATE tests SET numUrlsFound = 0 WHERE id = ?");
+			$stmt->bind_param("i", $testId);
+			$stmt->execute();
+			$stmt->close();
+			
+			$stmt = $db->prepare("UPDATE tests SET duration = 0 WHERE id = ?");
+			$stmt->bind_param("i", $testId);
+			$stmt->execute();
+			$stmt->close();
 
 			echo '<script type="text/javascript">
 		$(document).ready(function() {

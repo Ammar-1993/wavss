@@ -12,14 +12,24 @@ class MyCrawler extends PHPCrawler
 		$testId = $this->testId;
 		
 		$newUrl = $page_data['url'];
-		$query = "UPDATE tests SET status = 'Found URL $newUrl' WHERE id = $testId;"; 
 		if(connectToDb($db))
 		{
-			$db->query($query); 
-			$query = "UPDATE tests SET numUrlsFound = numUrlsFound + 1 WHERE id = $testId;"; 
-			$db->query($query); 
-			$query = "UPDATE tests SET urls_found=CONCAT(urls_found,'$newUrl<br>') WHERE id = $testId;";//Nearly doubles the duration of the crawl
-			$db->query($query); 
+			$statusMsg = "Found URL " . $newUrl;
+			$stmt = $db->prepare("UPDATE tests SET status = ? WHERE id = ?");
+			$stmt->bind_param("si", $statusMsg, $testId);
+			$stmt->execute();
+			$stmt->close();
+			
+			$stmt = $db->prepare("UPDATE tests SET numUrlsFound = numUrlsFound + 1 WHERE id = ?");
+			$stmt->bind_param("i", $testId);
+			$stmt->execute();
+			$stmt->close();
+			
+			$stmt = $db->prepare("UPDATE tests SET urls_found=CONCAT(urls_found, ?) WHERE id = ?");
+			$appendUrl = $newUrl . "<br>";
+			$stmt->bind_param("si", $appendUrl, $testId);
+			$stmt->execute();
+			$stmt->close();
 		}
 	}
 	

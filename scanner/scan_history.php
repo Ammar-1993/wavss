@@ -18,9 +18,11 @@ if(isset($_SESSION['username']))
 		return;
 	}
 	
-	$query = "SELECT * FROM tests WHERE type = 'scan' AND username = '$username'";
-	//echo $query;
-	$result = $db->query($query);
+	$stmt = $db->prepare("SELECT * FROM tests WHERE type = 'scan' AND username = ?");
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$stmt->close();
 	if($result)
 	{
 		$numRows = $result->num_rows;
@@ -38,8 +40,11 @@ if(isset($_SESSION['username']))
 				$url = $row->url;
 				
 				$numVulns = 'Unknown';
-				$query = "SELECT * FROM test_results WHERE test_id = $id";
-				$resultTwo = $db->query($query);
+				$stmtTwo = $db->prepare("SELECT * FROM test_results WHERE test_id = ?");
+				$stmtTwo->bind_param("i", $id);
+				$stmtTwo->execute();
+				$resultTwo = $stmtTwo->get_result();
+				$stmtTwo->close();
 				if($resultTwo)
 					$numVulns = $resultTwo->num_rows;
 			

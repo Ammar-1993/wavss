@@ -4,27 +4,35 @@ $currentDir = './';
 require_once($currentDir . 'functions/databaseFunctions.php');
 //require_once('classes/Logger.php');
 
-isset($_POST['testId']) ? $testId = $_POST['testId'] : $testId = 0;
+isset($_POST['testId']) ? $testId = (int)$_POST['testId'] : $testId = 0;
 
 connectToDb($db);
 
-$query = "SELECT * FROM tests WHERE id = $testId;"; 
-$result = $db->query($query);
+$stmt = $db->prepare("SELECT * FROM tests WHERE id = ?");
+$stmt->bind_param("i", $testId);
+$stmt->execute();
+$result = $stmt->get_result();
 $row = $result->fetch_object();
+$stmt->close();
 $finished = $row->scan_finished;
 
 //Update finish time to current time while scan is not finished
 if($finished == 0)
 {
 	$now = time();
-	$query = "UPDATE tests SET finish_timestamp = $now WHERE id = $testId;"; 
-	$result = $db->query($query); 
+	$stmt = $db->prepare("UPDATE tests SET finish_timestamp = ? WHERE id = ?");
+	$stmt->bind_param("ii", $now, $testId);
+	$stmt->execute();
+	$stmt->close();
 }
 
-$query = "SELECT * FROM tests WHERE id = $testId;"; 
-$result = $db->query($query); 
+$stmt = $db->prepare("SELECT * FROM tests WHERE id = ?");
+$stmt->bind_param("i", $testId);
+$stmt->execute();
+$result = $stmt->get_result();
 
 $row = $result->fetch_object();
+$stmt->close();
 $status = $row->status;
 $startTime = $row->start_timestamp;
 $finTime = $row->finish_timestamp;
@@ -37,9 +45,12 @@ $seconds = $duration % 60;
 $secondsStr = strval($seconds);
 $secondsFormatted = str_pad($secondsStr,2,"0",STR_PAD_LEFT);
 
-$query = "SELECT * FROM test_results WHERE test_id = $testId;"; 
-$result = $db->query($query); 
+$stmt = $db->prepare("SELECT * FROM test_results WHERE test_id = ?");
+$stmt->bind_param("i", $testId);
+$stmt->execute();
+$result = $stmt->get_result();
 $numVulns = $result->num_rows;
+$stmt->close();
 
 //TODO: Put table here, looks bit messy
 echo '<b>Scan Details:</b><br>';

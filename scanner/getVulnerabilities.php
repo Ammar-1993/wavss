@@ -3,11 +3,14 @@
 $currentDir = './';
 require_once($currentDir . 'functions/databaseFunctions.php');
 
-isset($_POST['testId']) ? $testId = $_POST['testId'] : $testId = 0;
+isset($_POST['testId']) ? $testId = (int)$_POST['testId'] : $testId = 0;
 
-$query = 'SELECT * FROM test_results WHERE test_id = ' . $testId; 
 connectToDb($db);
-$result = $db->query($query); 
+$stmt = $db->prepare('SELECT * FROM test_results WHERE test_id = ?');
+$stmt->bind_param('i', $testId);
+$stmt->execute();
+$result = $stmt->get_result();
+$stmt->close();
 if($result)
 {
 	$numRows = $result->num_rows;
