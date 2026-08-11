@@ -2,7 +2,7 @@
 
 
 require_once('functions/databaseFunctions.php');
-date_default_timezone_set('Asia/Riyadh'); // ← أضف هذا السطر
+date_default_timezone_set('Asia/Riyadh');
 
 
 global $user;
