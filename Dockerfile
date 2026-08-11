@@ -3,6 +3,7 @@ FROM php:8.2-apache
 # Install dependencies and PHP extensions required by the application
 RUN apt-get update && apt-get install -y \
     git \
+    curl \
     unzip \
     libzip-dev \
     && docker-php-ext-install mysqli zip
@@ -25,5 +26,8 @@ RUN chown -R www-data:www-data /var/www/html
 # Install Composer dependencies (no-dev for production)
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install --no-dev --optimize-autoloader
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost/healthz.php || exit 1
 
 EXPOSE 80
