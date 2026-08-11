@@ -4,6 +4,14 @@ require_once(__DIR__ . '/csrf.php');
 $currentDir = './';
 require_once($currentDir . 'scanner/functions/databaseFunctions.php');
 
+function is_safe_public_host($host) {
+    $ip = gethostbyname($host);
+    if ($ip === $host) {
+        return false;
+    }
+    return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false;
+}
+
 if (!isset($_SESSION['username'])) {
     die("You must be logged in to access this page.");
 }
@@ -75,12 +83,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify_domain_id'])) 
         }
         
         // Option (b): Check HTTP GET
+        $ssrf_error = false;
         if (!$verified) {
-            $url = "http://" . $domain . "/wavss-verify.txt";
-            $ctx = stream_context_create(['http' => ['timeout' => 5]]);
-            $content = @file_get_contents($url, false, $ctx);
-            if ($content !== false && trim($content) === $token) {
-                $verified = true;
+            if (!is_safe_public_host($domain)) {
+                $ssrf_error = true;
+            } else {
+                $url = "http://" . $domain . "/wavss-verify.txt";
+                $ctx = stream_context_create(['http' => ['timeout' => 5]]);
+                $content = @file_get_contents($url, false, $ctx);
+                if ($content !== false && trim($content) === $token) {
+                    $verified = true;
+                }
             }
         }
         
@@ -90,7 +103,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify_domain_id'])) 
             $stmt->execute();
             $msg = "Domain <b>" . htmlspecialchars($domain) . "</b> successfully verified!";
         } else {
-            $msg = "<span style='color:red;'>Verification failed for <b>" . htmlspecialchars($domain) . "</b>. Please ensure the DNS record or file is published correctly and try again.</span>";
+            if ($ssrf_error) {
+                $msg = "<span style='color:red;'>Verification failed: <b>" . htmlspecialchars($domain) . "</b> resolves to an invalid or internal IP address (SSRF protection).</span>";
+            } else {
+                $msg = "<span style='color:red;'>Verification failed for <b>" . htmlspecialchars($domain) . "</b>. Please ensure the DNS record or file is published correctly and try again.</span>";
+            }
         }
     }
 }
