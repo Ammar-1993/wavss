@@ -11,7 +11,7 @@ require_once($currentDir . "PHPCrawl_2024/classes/phpcrawler.class.php");
 require_once($currentDir . "PHPCrawl_2024/classes/mycrawler.php");
 
 //Include parsing class and http library
-require_once($currentDir . '../scanner/classes/simplehtmldom/simple_html_dom.php');
+require_once __DIR__ . '/../vendor/autoload.php';
 require_once($currentDir . '../scanner/classes/httpclient-2024/http.php');
 
 //Include Entity Classes

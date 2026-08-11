@@ -10,7 +10,7 @@ date_default_timezone_set('Asia/Riyadh');
 /*
 
 //Include parsing class and http library
-require_once('../classes/simplehtmldom/simple_html_dom.php');
+require_once __DIR__ . '/../../vendor/autoload.php';
 //require_once('HTTPclasses/HTTPclient/HTTPClient.class.php');
 require_once('../classes/httpclient-2024/http.php');
 
