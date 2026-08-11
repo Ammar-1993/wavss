@@ -1,0 +1,59 @@
+name: E2E Regression
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Start Docker Compose Stack
+        run: |
+          docker compose up --build -d
+          
+          # Find the auto-generated compose network and attach DVWA to it
+          # GitHub Actions normally uses the folder name, so it's likely 'wavss_default'
+          NETWORK_NAME=$(docker network ls --filter name=wavss -q | head -n 1)
+          if [ -z "$NETWORK_NAME" ]; then
+            NETWORK_NAME=$(docker network ls --filter driver=bridge -q | head -n 2 | tail -n 1)
+          fi
+          
+          docker run -d --name dvwa --network $NETWORK_NAME -p 8085:80 vulnerables/web-dvwa
+          
+      - name: Wait for services & Initialize DVWA
+        run: |
+          echo "Waiting for app..."
+          timeout 60 bash -c 'until curl -s http://localhost:8084/ > /dev/null; do sleep 2; done'
+          
+          echo "Waiting for DVWA..."
+          timeout 60 bash -c 'until curl -s http://localhost:8085/ > /dev/null; do sleep 2; done'
+          
+          # DVWA requires a database creation POST request on first boot before it is usable
+          echo "Initializing DVWA Database..."
+          curl -s -X POST http://localhost:8085/setup.php -d "create_db=Create+%2F+Reset+Database" > /dev/null
+
+      - name: Run E2E Scan
+        run: php tests/E2E/run_e2e_scan.php
+
+      - name: Verify Detection Results in Database
+        # We safely query the DB directly through the app container 
+        # so we don't have to map port 3306 securely to the host runner.
+        run: |
+          TEST_ID=$(cat tests/E2E/last_test_id.txt)
+          docker compose exec -T app php -r "
+            require 'scanner/functions/databaseFunctions.php';
+            connectToDb(\$db);
+            \$res = \$db->query(\"SELECT * FROM test_results WHERE test_id = \$TEST_ID AND type IN ('sqli', 'basqli')\");
+            if (\$res->num_rows > 0) {
+              echo 'Success: Found SQLi vulnerability in results.\n';
+              exit(0);
+            }
+            echo 'Failure: No SQLi vulnerability found in results.\n';
+            exit(1);
+          "

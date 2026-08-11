@@ -167,7 +167,7 @@ if (isset($_SESSION['username'])) {
 				$parsedHost = parse_url("http://" . $urlToScan, PHP_URL_HOST);
 			}
 			
-			$isLocal = in_array(strtolower($parsedHost), ['localhost', '127.0.0.1', '::1', '[::1]']);
+			$isLocal = in_array(strtolower($parsedHost), ['localhost', '127.0.0.1', '::1', '[::1]', 'dvwa']);
 			
 			if (!$isLocal) {
 				$verifyQuery = "SELECT id FROM domain_verifications WHERE username = ? AND domain = ? AND verified = 1";
