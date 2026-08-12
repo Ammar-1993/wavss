@@ -71,3 +71,21 @@ This document tracks the security vulnerabilities, code quality improvements, an
 ### 16. Continuous Integration & E2E Testing
 * **Before:** Code changes were merged without automated safety nets or regression checks against known vulnerable targets.
 * **After:** Established a GitHub Actions pipeline (`ci.yml` and `e2e.yml`) that automatically runs PHP syntax checks (`php -l`), executes unit tests, and launches an end-to-end regression scan on every push/PR. The E2E script deploys a `dvwa` container, automatically registers a WAVSS user, bypasses domain verification via a targeted local exemption, initiates a scan against the DVWA login page, and rigorously asserts the successful detection of a SQL Injection vulnerability in the backend database.
+
+## Phase Three: CI/CD Stabilization
+
+### 17. Composer Platform Constraints
+* **Before:** `composer.json` allowed flexible dependency resolution, causing it to lock `symfony/console` to version 8.x, which strictly requires PHP 8.4+ and subsequently crashed the CI pipeline on PHP 8.2 runners.
+* **After:** Pinned the `config.platform.php` setting to `8.2.33`, forcing Composer to safely resolve and downgrade dependencies to PHP 8.2-compatible versions.
+
+### 18. E2E Target Reliability
+* **Before:** The E2E test utilized a DVWA container as a target, which unpredictably blocked the scanner's SQLi payloads because the scanner did not maintain session cookies to bypass DVWA's CSRF protections.
+* **After:** Replaced DVWA with a dedicated, lightweight internal script (`tests/E2E/target.php`) intentionally vulnerable to SQL injection, ensuring fast, reliable, and deterministic validation of the core scanning engine.
+
+### 19. Legacy PHP 8 Syntax Errors
+* **Before:** The legacy `PHPCrawl_2024` library utilized deprecated `&new` (assignment by reference) operators, which triggered fatal syntax errors in PHP 8.
+* **After:** Refactored the library to remove the deprecated `&` operator, achieving full PHP 8 syntax compliance across the codebase.
+
+### 20. CI Race Conditions & Dynamic Directories
+* **Before:** The E2E pipeline suffered from multiple hidden race conditions and crashes: (1) it executed before MariaDB finished seeding the database, causing silent login failures; (2) TCPDF fatally crashed when saving reports because Git ignored the empty `scanner/reports` directory; and (3) a bash script failed to interpolate the `$TEST_ID` variable in the final SQL assertion.
+* **After:** Enhanced `healthz.php` to actively query the database table to guarantee readiness, updated the `Dockerfile` to explicitly create ignored runtime directories (`reports/`, `logs/`), and corrected the bash variable syntax in `e2e.yml` to `${TEST_ID}`, securing a 100% green and stable CI/CD pipeline.
