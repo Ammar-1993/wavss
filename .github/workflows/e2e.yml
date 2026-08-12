@@ -33,7 +33,7 @@ jobs:
           docker compose exec -T app php -r "
             require 'scanner/functions/databaseFunctions.php';
             connectToDb(\$db);
-            \$res = \$db->query(\"SELECT * FROM test_results WHERE test_id = \$TEST_ID AND type IN ('sqli', 'basqli')\");
+            \$res = \$db->query(\"SELECT * FROM test_results WHERE test_id = ${TEST_ID} AND type IN ('sqli', 'basqli')\");
             if (\$res->num_rows > 0) {
               echo 'Success: Found SQLi vulnerability in results.\n';
               exit(0);
