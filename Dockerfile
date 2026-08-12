@@ -20,8 +20,11 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . /var/www/html/
 
-# Ensure directories (like logs) are writable by the web server
-RUN chown -R www-data:www-data /var/www/html
+# Ensure directories (like logs, reports) exist and are writable by the web server
+RUN mkdir -p /var/www/html/scanner/reports \
+             /var/www/html/scanner/logs \
+             /var/www/html/crawler/logs \
+    && chown -R www-data:www-data /var/www/html
 
 # Install Composer dependencies (no-dev for production)
 ENV COMPOSER_ALLOW_SUPERUSER=1
