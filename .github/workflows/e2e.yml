@@ -20,7 +20,7 @@ jobs:
       - name: Wait for services
         run: |
           echo "Waiting for app..."
-          timeout 60 bash -c 'until curl -s http://localhost:8084/ > /dev/null; do sleep 2; done'
+          timeout 60 bash -c 'until curl -s -f http://localhost:8084/healthz.php > /dev/null; do sleep 2; done'
 
       - name: Run E2E Scan
         run: php tests/E2E/run_e2e_scan.php
