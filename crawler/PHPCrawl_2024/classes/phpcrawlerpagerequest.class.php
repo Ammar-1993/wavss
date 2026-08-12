@@ -81,7 +81,7 @@ class PHPCrawlerPageRequest
       include_once($classpath."/phpcrawlerrobotstxthandler.class.php");
       
       // Initiate a new RobotsTxtHandler-Object
-      $this->robotsTxtHandler = &new PHPCrawlerRobotsTxtHandler();
+      $this->robotsTxtHandler = new PHPCrawlerRobotsTxtHandler();
     }
   }
                                                                                

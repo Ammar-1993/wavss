@@ -108,7 +108,7 @@ if (get_magic_quotes_gpc() == true)
   stripSlashesRec($_POST["val"]);
 }
 
-$crawler = &new phpcrawlSetup ($_POST["val"], $_POST["output"]); // $val is the posted setup-array,
+$crawler = new phpcrawlSetup ($_POST["val"], $_POST["output"]); // $val is the posted setup-array,
                                                                  // $output the posted output-array
                                                  
 if (isset($_POST["misc"]["force_flush"]) && $_POST["misc"]["force_flush"] == "1")

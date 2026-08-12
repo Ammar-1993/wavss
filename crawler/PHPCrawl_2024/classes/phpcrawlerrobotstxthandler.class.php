@@ -230,7 +230,7 @@ class PHPCrawlerRobotsTxtHandler
     $robotstxt_url = $base_url . "/robots.txt";
     
     // Init a new PageRequest-Object
-    $Request = &new PHPCrawlerPageRequest();
+    $Request = new PHPCrawlerPageRequest();
     $page_data = $Request->receivePage($robotstxt_url, "");
 
     // Return content of the robots.txt-file if it was found, otherwie
