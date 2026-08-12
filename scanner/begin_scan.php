@@ -14,6 +14,7 @@ require_once($currentDir . "../crawler/PHPCrawl_2024/classes/mycrawler.php");
 
 //Include parsing class and http library
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/simplehtmldom/simplehtmldom/simple_html_dom.php';
 require_once($currentDir . 'classes/httpclient-2024/http.php');
 
 //Include Entity Classes
@@ -43,6 +44,7 @@ require_once($currentDir . 'tests/testSslCertificate.php');
 
 //Include PDF generator
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/tecnickcom/tcpdf/tcpdf_autoconfig.php';
 
 $log = new Logger();
 $log->lfile($currentDir . 'logs/eventlogs');

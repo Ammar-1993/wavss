@@ -44,8 +44,8 @@ $postUrlPath = parse_url($postUrl, PHP_URL_PATH);
 //Check URL is not responding with 5xx codes
 $log->lwrite("Checking what response code is received from $urlToCheck");
 $http = new http_class;
-$http->timeout=0;
-$http->data_timeout=0;
+$http->timeout=5;
+$http->data_timeout=5;
 //$http->debug=1;
 $http->user_agent="Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
 $http->follow_redirect=1;
@@ -186,8 +186,8 @@ if($parsedUrl)
 		{
 			
 			$http = new http_class;
-			$http->timeout=0;
-			$http->data_timeout=0;
+			$http->timeout=5;
+			$http->data_timeout=5;
 			//$http->debug=1;
 			$http->user_agent="Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
 			$http->follow_redirect=1;
@@ -377,8 +377,8 @@ for($i=0; $i<sizeof($arrayOfForms); $i++)
 			if($currentFormInputType!= 'reset')
 			{
 				$http = new http_class;
-				$http->timeout=0;
-				$http->data_timeout=0;
+				$http->timeout=5;
+				$http->data_timeout=5;
 				//$http->debug=1;
 				$http->user_agent="Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
 				$http->follow_redirect=1;

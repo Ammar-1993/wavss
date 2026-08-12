@@ -82,7 +82,7 @@ $attempt = 0;
 while ($attempt < $maxAttempts) {
     $status = request('/scanner/getStatus.php', ['testId' => $testId]);
     echo "Status: " . strip_tags($status) . "\n";
-    if (strpos($status, 'Scan Complete') !== false) {
+    if (stripos($status, 'Scan is complete') !== false) {
         break;
     }
     sleep(2);

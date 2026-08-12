@@ -297,7 +297,7 @@ function createPdfReport($testId, &$fileName)
 	$html .= '<h1>Thank you for scanning with WAVSS!</h1>';
 	$pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
 
-	$fileName = 'reports/Test_' . $testId . '.pdf';
+	$fileName = __DIR__ . '/../reports/Test_' . $testId . '.pdf';
 
 	//Output PDF, this function has multiple options
 	$pdf->Output($fileName, 'F'); //set this to 'F' to save as file, 'I' to output to browser, E: return the document as base64 mime multi-part email attachment

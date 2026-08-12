@@ -48,7 +48,7 @@ class http_class
 	var $proxy_request_workstation;
 	var $request_body="";
 	var $request_arguments=array();
-	var $protocol_version="1.1";
+	var $protocol_version="1.0";
 	var $timeout=0;
 	var $data_timeout=0;
 	var $debug=0;
@@ -1297,6 +1297,7 @@ class http_class
 			$headers[]="Host: ".$this->host_name;
 			$this->request_host=strtolower($this->host_name);
 		}
+		$headers[]="Connection: close";
 		if(count($this->cookies))
 		{
 			$cookies=array();
