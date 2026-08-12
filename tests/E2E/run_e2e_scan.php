@@ -24,13 +24,14 @@ preg_match('/name="csrf_token" value="(.*?)"/', $html, $matches);
 $csrf = $matches[1];
 
 echo "2. Registering test user...\n";
-$username = 'e2e_user_' . time();
+$username = 'e2euser' . time();
+$email = 'e2e_' . time() . '@example.com';
 request('/register.php', [
     'csrf_token' => $csrf,
-    'username' => $username,
-    'email' => 'e2e@example.com',
-    'password' => 'password123',
-    'confirm_password' => 'password123',
+    'regusername' => $username,
+    'email' => $email,
+    'regpassword' => 'password123',
+    'regpassword2' => 'password123',
     'submit' => 'Register'
 ]);
 
@@ -40,7 +41,7 @@ preg_match('/name="csrf_token" value="(.*?)"/', $html, $matches);
 $csrf = $matches[1];
 request('/login.php', [
     'csrf_token' => $csrf,
-    'email' => 'e2e@example.com',
+    'email' => $email,
     'password' => 'password123',
     'submit' => 'Login'
 ]);
@@ -57,12 +58,13 @@ $res = request('/scanner.php', [
     'submit' => 'Start Scan'
 ]);
 
-if (preg_match('/beginScan\("http:\\\/\\\/dvwa\\\/login\.php",(\d+),/', $res, $matches) || 
-    preg_match('/beginScan\("http:\/\/dvwa\/login\.php",(\d+),/', $res, $matches)) {
+if (preg_match('#beginScan\("http:\\\\/\\\\/dvwa\\\\/login\.php",(\d+),#', $res, $matches) || 
+    preg_match('#beginScan\("http://dvwa/login\.php",(\d+),#', $res, $matches)) {
     $testId = $matches[1];
     file_put_contents(__DIR__ . '/last_test_id.txt', $testId);
 } else {
-    die("Failed to extract testId from scanner page.\n");
+    echo "Failed to extract testId from scanner page.\n";
+    exit(1);
 }
 
 echo "5. Triggering backend scan process for Test ID $testId...\n";
@@ -70,7 +72,7 @@ request('/scanner/begin_scan.php', [
     'specifiedUrl' => 'http://dvwa/login.php',
     'testId' => $testId,
     'username' => $username,
-    'email' => 'e2e@example.com',
+    'email' => $email,
     'testCases' => ' sqli '
 ]);
 
@@ -88,6 +90,7 @@ while ($attempt < $maxAttempts) {
 }
 
 if ($attempt >= $maxAttempts) {
-    die("Scan timed out.\n");
+    echo "Scan timed out.\n";
+    exit(1);
 }
 echo "Scan finished!\n";

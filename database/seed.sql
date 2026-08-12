@@ -21,7 +21,8 @@ CREATE TABLE `tests` (
   `scan_finished` bit(1) NOT NULL,
   `url` text NOT NULL,
   `username` text NOT NULL,
-  `urls_found` text NOT NULL
+  `urls_found` text NOT NULL,
+  `duration` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Table structure for table `test_results`
