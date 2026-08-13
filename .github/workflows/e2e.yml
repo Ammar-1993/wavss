@@ -15,6 +15,7 @@ jobs:
 
       - name: Start Docker Compose Stack
         run: |
+          cp .env.docker.example .env.docker
           docker compose up --build -d
           
       - name: Wait for services
