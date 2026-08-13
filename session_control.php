@@ -54,9 +54,16 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 				}
 
 				if ($validPassword) {
-					$_SESSION['username'] = $row->username;
-					$_SESSION['email'] = $email;
-					$loginMsg = 'You have successfully logged in';
+					if (!empty($row->totp_enabled)) {
+						$_SESSION['pending_2fa_username'] = $row->username;
+						$_SESSION['pending_2fa_email'] = $email;
+						header('Location: verify_2fa.php');
+						exit;
+					} else {
+						$_SESSION['username'] = $row->username;
+						$_SESSION['email'] = $email;
+						$loginMsg = 'You have successfully logged in';
+					}
 				} else {
 					$loginMsg = 'Invalid email or password. Please try again';
 				}

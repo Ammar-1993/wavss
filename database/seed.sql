@@ -38,7 +38,9 @@ CREATE TABLE `test_results` (
 CREATE TABLE `users` (
   `username` text NOT NULL,
   `password` text NOT NULL,
-  `email` text NOT NULL
+  `email` text NOT NULL,
+  `totp_secret` text DEFAULT NULL,
+  `totp_enabled` boolean NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Table structure for table `vulnerabilities`
