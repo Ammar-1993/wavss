@@ -89,3 +89,25 @@ This document tracks the security vulnerabilities, code quality improvements, an
 ### 20. CI Race Conditions & Dynamic Directories
 * **Before:** The E2E pipeline suffered from multiple hidden race conditions and crashes: (1) it executed before MariaDB finished seeding the database, causing silent login failures; (2) TCPDF fatally crashed when saving reports because Git ignored the empty `scanner/reports` directory; and (3) a bash script failed to interpolate the `$TEST_ID` variable in the final SQL assertion.
 * **After:** Enhanced `healthz.php` to actively query the database table to guarantee readiness, updated the `Dockerfile` to explicitly create ignored runtime directories (`reports/`, `logs/`), and corrected the bash variable syntax in `e2e.yml` to `${TEST_ID}`, securing a 100% green and stable CI/CD pipeline.
+
+## Phase Four: Feature Enhancements (Future Scope)
+
+### 21. Two-Factor Authentication (TOTP)
+* **Before:** User authentication relied solely on a standard username/password combination.
+* **After:** Integrated `pragmarx/google2fa` to optionally enforce Time-Based One-Time Password (TOTP) verification. Created an enrollment flow (`enable_2fa.php`) and a robust login interceptor (`verify_2fa.php`) that pauses session creation until a valid code is provided.
+
+### 22. REST API Layer
+* **Before:** The scanning engine was tightly coupled to the web UI, preventing programmatic or headless execution.
+* **After:** Extracted core logic into `initializeNewScan()` and built a suite of RESTful API endpoints (`scan.php`, `status.php`, `report.php`). Introduced Bearer Token authentication via securely generated keys stored in a new `api_keys` table.
+
+### 23. Scheduled & Recurring Scans
+* **Before:** Users had to manually log in and click "Start Scan" every time they wanted to assess their web applications.
+* **After:** Added a `scheduled_scans` table and a frontend scheduling UI. Built a CLI-only cron script (`run_scheduled_scans.php`) that automatically triggers asynchronous scans at specific daily/weekly intervals while cleanly bypassing standard active-scan concurrency locks.
+
+### 24. Historical Trends View
+* **Before:** Vulnerability data was siloed inside individual scan reports with no way to track remediation progress over time.
+* **After:** Created `trends.php` using advanced SQL JOINs to aggregate vulnerability totals across historic scans. Implemented Chart.js to render visually rich, responsive line graphs tracking the trajectory of each vulnerability category (XSS, SQLi, etc.) on a per-domain basis.
+
+### 25. AI-Assisted Vulnerability Triage
+* **Before:** The scanner relied exclusively on deterministic signatures, occasionally yielding false positives when normal page content matched an attack string.
+* **After:** Introduced an optional, non-blocking AI triage step (`aiTriage.php`) utilizing the Gemini API. When configured, it silently analyzes findings at the end of a scan, returning a plain-language explanation and True Positive confidence score cleanly injected into both the Web and PDF reports.
