@@ -35,6 +35,17 @@
           <li class="nav-item">
             <a class="nav-link <?php if($currentPage == 'history.php') echo 'active'; ?>" href="history.php">Scan History</a>
           </li>
+          <?php if (isset($_SESSION['username'])): ?>
+          <li class="nav-item">
+            <a class="nav-link <?php if($currentPage == 'trends.php') echo 'active'; ?>" href="trends.php">Trends</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <?php if($currentPage == 'schedule_scan.php') echo 'active'; ?>" href="schedule_scan.php">Scheduled Scans</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <?php if($currentPage == 'enable_2fa.php') echo 'active'; ?>" href="enable_2fa.php">Enable 2FA</a>
+          </li>
+          <?php endif; ?>
         </ul>
         <div class="d-flex align-items-center">
           <?php require_once($currentDir . 'session_control.php'); ?>
