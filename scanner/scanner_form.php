@@ -252,32 +252,16 @@ if (isset($_SESSION['username'])) {
 
 			echo '<script type="text/javascript">
 				document.addEventListener("DOMContentLoaded", function() {
-					const updateStatus = function() {
-						fetch("scanner/getStatus.php", {
-							method: "POST",
-							body: new URLSearchParams({testId: ' . "$testId" . '}),
-							cache: "no-store"
-						}).then(res => res.text()).then(data => {
-							document.getElementById("status").innerHTML = data;
-						});
-					};
-					updateStatus();
-					setInterval(updateStatus, 500);
-				});</script>';
-
-			echo '<script type="text/javascript">
-				document.addEventListener("DOMContentLoaded", function() {
-					const updateScanStatus = function() {
-						fetch("scanner/getVulnerabilities.php", {
-							method: "POST",
-							body: new URLSearchParams({testId: ' . "$testId" . '}),
-							cache: "no-store"
-						}).then(res => res.text()).then(data => {
-							document.getElementById("scanstatus").innerHTML = data;
-						});
-					};
-					updateScanStatus();
-					setInterval(updateScanStatus, 1000);
+					const evtSource = new EventSource("scanner/scanStream.php?testId=' . "$testId" . '");
+					evtSource.addEventListener("status", function(e) {
+						document.getElementById("status").innerHTML = JSON.parse(e.data);
+					});
+					evtSource.addEventListener("vulnerability", function(e) {
+						document.getElementById("scanstatus").innerHTML = JSON.parse(e.data);
+					});
+					evtSource.addEventListener("done", function(e) {
+						evtSource.close();
+					});
 				});</script>';
 
 			$urlToScan = $_POST['urlToScan'];
