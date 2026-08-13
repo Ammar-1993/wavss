@@ -162,90 +162,19 @@ if (isset($_SESSION['username'])) {
 				return;
 			}
 
-			// Domain Ownership Verification Check
-			$parsedHost = parse_url($urlToScan, PHP_URL_HOST);
-			if (!$parsedHost) {
-				$parsedHost = parse_url("http://" . $urlToScan, PHP_URL_HOST);
-			}
+			$scanInit = initializeNewScan($db, $username, $urlToScan);
 			
-			$isLocal = in_array(strtolower($parsedHost), ['localhost', '127.0.0.1', '::1', '[::1]', 'dvwa']);
-			
-			if (!$isLocal) {
-				$verifyQuery = "SELECT id FROM domain_verifications WHERE username = ? AND domain = ? AND verified = 1";
-				$verifyStmt = $db->prepare($verifyQuery);
-				$verifyStmt->bind_param('ss', $username, $parsedHost);
-				$verifyStmt->execute();
-				$verifyRes = $verifyStmt->get_result();
-				
-				if ($verifyRes->num_rows == 0) {
-					echo "<p style='color:red;'>Error: You must prove ownership of the domain <b>" . htmlspecialchars($parsedHost) . "</b> before scanning it.</p>";
+			if (!$scanInit['success']) {
+				$log->lwrite("Scan init failed: " . $scanInit['error']);
+				echo "<p style='color:red;'>Error: " . $scanInit['error'] . "</p>";
+				if (strpos($scanInit['error'], 'ownership') !== false) {
 					echo "<p><a href='verify_domain.php'>Click here to verify domain ownership</a></p>";
-					return;
 				}
-			}
-
-			// Rate Limit: Concurrency (max 1 active scan per user)
-			$activeScanQuery = "SELECT id FROM tests WHERE username = ? AND type = 'scan' AND scan_finished = 0";
-			$activeScanStmt = $db->prepare($activeScanQuery);
-			$activeScanStmt->bind_param('s', $username);
-			$activeScanStmt->execute();
-			if ($activeScanStmt->get_result()->num_rows > 0) {
-				echo "<p style='color:red;'>Error: You already have an active scan running. Please wait for it to finish before starting a new one.</p>";
 				return;
 			}
-
-			// Rate Limit: Frequency (max 1 scan per 5 minutes per URL)
-			$recentScanQuery = "SELECT start_timestamp FROM tests WHERE username = ? AND url = ? ORDER BY start_timestamp DESC LIMIT 1";
-			$recentScanStmt = $db->prepare($recentScanQuery);
-			$recentScanStmt->bind_param('ss', $username, $urlToScan);
-			$recentScanStmt->execute();
-			$recentScanRes = $recentScanStmt->get_result();
-			if ($recentScanRes->num_rows > 0) {
-				$row = $recentScanRes->fetch_object();
-				$timeSince = time() - $row->start_timestamp;
-				if ($timeSince < 300) {
-					$remaining = 300 - $timeSince;
-					echo "<p style='color:red;'>Error: You scanned this URL recently. Please wait $remaining seconds before scanning it again.</p>";
-					return;
-				}
-			}
-
-			$log->lwrite('Generating next test ID');
-			$nextId = generateNextTestId($db);
-
-			if (!$nextId) {
-				$log->lwrite('Next ID generated is null');
-				echo 'Next ID generated is null';
-				return;
-			} else {
-				$log->lwrite("Next ID generated is $nextId");
-				$testId = $nextId;
-				$now = time();
-				$query = "INSERT into tests(id,status,numUrlsFound,type,num_requests_sent,start_timestamp,finish_timestamp,scan_finished,url,username,urls_found) VALUES(?, 'Creating profile for new scan...', 0, 'scan', 0, ?, ?, 0, ?, ?, '')";
-				$stmt = $db->prepare($query);
-				$stmt->bind_param('iiiss', $nextId, $now, $now, $urlToScan, $username);
-				$result = $stmt->execute();
-				$stmt->close();
-				if (!$result) {
-					$log->lwrite("Problem executing query for new scan.");
-					echo 'Problem inserting a new test into the database. Please try again.';
-					return;
-				} else {
-					$log->lwrite("Successfully executed query for new scan.");
-				}
-			}
-
-			updateStatus($db, 'Pending...', $testId);
-
-			$stmt = $db->prepare("UPDATE tests SET numUrlsFound = 0 WHERE id = ?");
-			$stmt->bind_param("i", $testId);
-			$stmt->execute();
-			$stmt->close();
 			
-			$stmt = $db->prepare("UPDATE tests SET duration = 0 WHERE id = ?");
-			$stmt->bind_param("i", $testId);
-			$stmt->execute();
-			$stmt->close();
+			$testId = $scanInit['testId'];
+			$log->lwrite("Next ID generated is $testId");
 
 			echo '<script type="text/javascript">
 				document.addEventListener("DOMContentLoaded", function() {
