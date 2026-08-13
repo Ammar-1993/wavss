@@ -141,3 +141,15 @@ CREATE TABLE `api_keys` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `api_key` (`api_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Table structure for table `scheduled_scans`
+CREATE TABLE `scheduled_scans` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` text NOT NULL,
+  `url` text NOT NULL,
+  `frequency_hours` int(11) NOT NULL,
+  `next_run_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `active` boolean NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

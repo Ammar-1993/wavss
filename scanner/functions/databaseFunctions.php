@@ -62,3 +62,77 @@ function incrementHttpRequests($db, $testId)
 	$stmt->close();
 	return $result;
 }
+
+// Initializes a new scan, handling rate limits and domain validation
+// Returns ['success' => true, 'testId' => $testId] or ['success' => false, 'error' => 'message']
+function initializeNewScan($db, $username, $urlToScan, $skipConcurrencyCheck = false)
+{
+	$parsedHost = parse_url($urlToScan, PHP_URL_HOST);
+	if (!$parsedHost) {
+		$parsedHost = parse_url("http://" . $urlToScan, PHP_URL_HOST);
+	}
+	
+	$isLocal = in_array(strtolower($parsedHost), ['localhost', '127.0.0.1', '::1', '[::1]', 'dvwa']);
+	
+	if (!$isLocal) {
+		$verifyQuery = "SELECT id FROM domain_verifications WHERE username = ? AND domain = ? AND verified = 1";
+		$verifyStmt = $db->prepare($verifyQuery);
+		$verifyStmt->bind_param('ss', $username, $parsedHost);
+		$verifyStmt->execute();
+		$verifyRes = $verifyStmt->get_result();
+		
+		if ($verifyRes->num_rows == 0) {
+			return ['success' => false, 'error' => "You must prove ownership of the domain " . htmlspecialchars($parsedHost) . " before scanning it."];
+		}
+	}
+
+	if (!$skipConcurrencyCheck) {
+		$activeScanQuery = "SELECT id FROM tests WHERE username = ? AND type = 'scan' AND scan_finished = 0";
+		$activeScanStmt = $db->prepare($activeScanQuery);
+		$activeScanStmt->bind_param('s', $username);
+		$activeScanStmt->execute();
+		if ($activeScanStmt->get_result()->num_rows > 0) {
+			return ['success' => false, 'error' => "You already have an active scan running. Please wait for it to finish before starting a new one."];
+		}
+	}
+
+	$recentScanQuery = "SELECT start_timestamp FROM tests WHERE username = ? AND url = ? ORDER BY start_timestamp DESC LIMIT 1";
+	$recentScanStmt = $db->prepare($recentScanQuery);
+	$recentScanStmt->bind_param('ss', $username, $urlToScan);
+	$recentScanStmt->execute();
+	$recentScanRes = $recentScanStmt->get_result();
+	if ($recentScanRes->num_rows > 0) {
+		$row = $recentScanRes->fetch_object();
+		$timeSince = time() - $row->start_timestamp;
+		if ($timeSince < 300) {
+			$remaining = 300 - $timeSince;
+			return ['success' => false, 'error' => "You scanned this URL recently. Please wait $remaining seconds before scanning it again."];
+		}
+	}
+
+	$nextId = generateNextTestId($db);
+
+	if (!$nextId) {
+		return ['success' => false, 'error' => "Failed to generate next test ID."];
+	}
+
+	$testId = $nextId;
+	$now = time();
+	$query = "INSERT into tests(id,status,numUrlsFound,type,num_requests_sent,start_timestamp,finish_timestamp,scan_finished,url,username,urls_found) VALUES(?, 'Creating profile for new scan...', 0, 'scan', 0, ?, ?, 0, ?, ?, '')";
+	$stmt = $db->prepare($query);
+	$stmt->bind_param('iiiss', $nextId, $now, $now, $urlToScan, $username);
+	$result = $stmt->execute();
+	$stmt->close();
+	if (!$result) {
+		return ['success' => false, 'error' => "Problem inserting a new test into the database. Please try again."];
+	}
+
+	updateStatus($db, 'Pending...', $testId);
+
+	$stmt = $db->prepare("UPDATE tests SET numUrlsFound = 0, duration = 0 WHERE id = ?");
+	$stmt->bind_param("i", $testId);
+	$stmt->execute();
+	$stmt->close();
+
+	return ['success' => true, 'testId' => $testId];
+}
