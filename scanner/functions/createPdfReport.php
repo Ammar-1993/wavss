@@ -26,6 +26,7 @@ function createPdfReport($testId, &$fileName)
 	$log->lwrite("Starting PDF generator function for test: $testId");
 
 	// create new PDF document
+	require_once __DIR__ . '/../../vendor/tecnickcom/tcpdf/tcpdf_autoconfig.php';
 	$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 	// set document information
