@@ -4,9 +4,13 @@ date_default_timezone_set('Asia/Riyadh');
 ?>
 <script type="text/javascript">
 	function beginCrawl(value, valueTwo) {
-		jQuery.post("crawler/begin_crawl.php", {
-			specifiedUrl: value,
-			testId: valueTwo
+		fetch("crawler/begin_crawl.php", {
+			method: 'POST',
+			body: new URLSearchParams({
+				specifiedUrl: value,
+				testId: valueTwo
+			}),
+			cache: 'no-store'
 		});
 	}
 </script>
@@ -88,21 +92,33 @@ if (isset($_SESSION['username'])) {
 			$stmt->close();
 
 			echo '<script type="text/javascript">
-		$(document).ready(function() {
-		 $.post("crawler/getStatus.php", {testId:' . "$testId" . '}, function(data){$("#status").html(data)});
-		var refreshId = setInterval(function() {
-		  $.post("crawler/getStatus.php", {testId:' . "$testId" . '}, function(data){$("#status").html(data)});
-		}, 500);
-		$.ajaxSetup({ cache: false });
+		document.addEventListener("DOMContentLoaded", function() {
+			const updateStatus = function() {
+				fetch("crawler/getStatus.php", {
+					method: "POST",
+					body: new URLSearchParams({testId: ' . "$testId" . '}),
+					cache: "no-store"
+				}).then(res => res.text()).then(data => {
+					document.getElementById("status").innerHTML = data;
+				});
+			};
+			updateStatus();
+			setInterval(updateStatus, 500);
 		});</script>';
 
 			echo '<script type="text/javascript">
-		$(document).ready(function() {
-		 $.post("crawler/getUrlsFound.php", {testId:' . "$testId" . '}, function(data){$("#urlsFound").html(data)});
-		var refreshId = setInterval(function() {
-		  $.post("crawler/getUrlsFound.php", {testId:' . "$testId" . '}, function(data){$("#urlsFound").html(data)});
-		}, 500);
-		$.ajaxSetup({ cache: false });
+		document.addEventListener("DOMContentLoaded", function() {
+			const updateUrlsFound = function() {
+				fetch("crawler/getUrlsFound.php", {
+					method: "POST",
+					body: new URLSearchParams({testId: ' . "$testId" . '}),
+					cache: "no-store"
+				}).then(res => res.text()).then(data => {
+					document.getElementById("urlsFound").innerHTML = data;
+				});
+			};
+			updateUrlsFound();
+			setInterval(updateUrlsFound, 500);
 		});</script>';
 
 			$log->lwrite('Calling AJAX function beginCrawl()');

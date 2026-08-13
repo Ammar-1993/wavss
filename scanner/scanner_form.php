@@ -4,12 +4,16 @@ date_default_timezone_set('Asia/Riyadh');
 
 <script type="text/javascript">
 	function beginScan(value, valueTwo, valueThree, valueFour, valueFive) {
-		jQuery.post("scanner/begin_scan.php", {
-			specifiedUrl: value,
-			testId: valueTwo,
-			username: valueThree,
-			email: valueFour,
-			testCases: valueFive
+		fetch("scanner/begin_scan.php", {
+			method: 'POST',
+			body: new URLSearchParams({
+				specifiedUrl: value,
+				testId: valueTwo,
+				username: valueThree,
+				email: valueFour,
+				testCases: valueFive
+			}),
+			cache: 'no-store'
 		});
 	}
 
@@ -247,21 +251,33 @@ if (isset($_SESSION['username'])) {
 			$stmt->close();
 
 			echo '<script type="text/javascript">
-				$(document).ready(function() {
-				 $.post("scanner/getStatus.php", {testId:' . "$testId" . '}, function(data){$("#status").html(data)});
-			   var refreshId = setInterval(function() {
-				  $.post("scanner/getStatus.php", {testId:' . "$testId" . '}, function(data){$("#status").html(data)});
-			   }, 500);
-			   $.ajaxSetup({ cache: false });
+				document.addEventListener("DOMContentLoaded", function() {
+					const updateStatus = function() {
+						fetch("scanner/getStatus.php", {
+							method: "POST",
+							body: new URLSearchParams({testId: ' . "$testId" . '}),
+							cache: "no-store"
+						}).then(res => res.text()).then(data => {
+							document.getElementById("status").innerHTML = data;
+						});
+					};
+					updateStatus();
+					setInterval(updateStatus, 500);
 				});</script>';
 
 			echo '<script type="text/javascript">
-				$(document).ready(function() {
-				 $.post("scanner/getVulnerabilities.php", {testId:' . "$testId" . '}, function(data){$("#scanstatus").html(data)});
-			   var refreshId = setInterval(function() {
-				  $.post("scanner/getVulnerabilities.php", {testId:' . "$testId" . '}, function(data){$("#scanstatus").html(data)});
-			   }, 1000);
-			   $.ajaxSetup({ cache: false });
+				document.addEventListener("DOMContentLoaded", function() {
+					const updateScanStatus = function() {
+						fetch("scanner/getVulnerabilities.php", {
+							method: "POST",
+							body: new URLSearchParams({testId: ' . "$testId" . '}),
+							cache: "no-store"
+						}).then(res => res.text()).then(data => {
+							document.getElementById("scanstatus").innerHTML = data;
+						});
+					};
+					updateScanStatus();
+					setInterval(updateScanStatus, 1000);
 				});</script>';
 
 			$urlToScan = $_POST['urlToScan'];
