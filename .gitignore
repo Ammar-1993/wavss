@@ -8,3 +8,4 @@ scanner/logs/*
 crawler/logs/*
 .php-cs-fixer.cache
 tests/E2E/last_test_id.txt
+.env.docker
