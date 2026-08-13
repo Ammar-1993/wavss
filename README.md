@@ -63,13 +63,17 @@ WAVSS is a comprehensive, automated web-based vulnerability scanner designed to 
 
 ---
 
+## Recently Implemented Features
+
+- **Multi-factor Authentication:** TOTP-based 2FA for enhanced user security.
+- **REST API:** API support for integration with external security tools and headless execution.
+- **Scheduled Scans:** Scheduling functionality for automated periodic background scans.
+- **Historical Trends:** Visualization dashboard mapping vulnerability counts across past scans.
+- **AI-Assisted Triage:** Integration of AI-powered vulnerability evaluation for improved accuracy and false-positive detection.
+- **Mobile-Friendly UI:** A fully responsive Bootstrap 5 interface for scanning on-the-go.
+
 ## Future Enhancements
 
-- Integration of AI-powered vulnerability detection for improved accuracy.
-- Scheduling functionality for automated periodic scans.
-- Multi-factor authentication for enhanced security.
-- API support for integration with external security tools.
-- Mobile-friendly interface for scanning on-the-go.
 - Real-time threat intelligence feed integration.
   
 ---
@@ -87,11 +91,6 @@ WAVSS is a comprehensive, automated web-based vulnerability scanner designed to 
 
 **Supervisor:**  
 - Dr. Muhammad Ayub Muhammad Khan  
-
-**University:**  
-- University of Bisha  
-- College of Computers and Information Technology  
-- Cybersecurity Department  
 
 ---
 
