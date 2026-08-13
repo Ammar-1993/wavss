@@ -29,6 +29,7 @@ require_once($currentDir . 'functions/commonFunctions.php');
 require_once($currentDir . 'functions/databaseFunctions.php');
 require_once($currentDir . 'functions/createPdfReport.php');
 require_once($currentDir . 'functions/emailPdfToUser.php');
+require_once($currentDir . 'functions/aiTriage.php');
 
 //Include test scripts
 require_once($currentDir . 'tests/testForReflectedXSS.php');
@@ -220,6 +221,26 @@ if(stristr($testCases,' sxss ') !== false)
 	}
 	$log->lwrite('Finished Stored XSS testing of all URLS for test: ' . $testId);
 	updateStatus($db, "Finished Stored Cross-Site Scripting testing...", $testId);
+}
+
+// Optional AI Triage Loop
+if (!empty(getenv('AI_API_KEY'))) {
+	$log->lwrite('Beginning AI triage on findings for test: ' . $testId);
+	updateStatus($db, "Running AI triage on findings...", $testId);
+
+	$res = $db->query("SELECT id, type, method, url, attack_str FROM test_results WHERE test_id = $testId AND ai_note IS NULL");
+	if ($res && $res->num_rows > 0) {
+		$updateStmt = $db->prepare("UPDATE test_results SET ai_note = ? WHERE id = ?");
+		while ($row = $res->fetch_object()) {
+			$aiNote = triageResult($row->type, $row->url, $row->attack_str);
+			if ($aiNote !== null) {
+				$updateStmt->bind_param('si', $aiNote, $row->id);
+				$updateStmt->execute();
+			}
+		}
+		$updateStmt->close();
+	}
+	$log->lwrite('Finished AI triage for test: ' . $testId);
 }
 
 //Create PDF report

@@ -224,8 +224,9 @@ function createPdfReport($testId, &$fileName)
 				$method = $row->method;
 				$url = $row->url;
 				$attack_str = $row->attack_str;
+				$ai_note = $row->ai_note;
 
-				$vuln = new Vulnerability($test_id, $type, $method, $url, $attack_str);
+				$vuln = new Vulnerability($test_id, $type, $method, $url, $attack_str, $ai_note);
 				array_push($vulnsFound, $vuln);
 
 				if (!in_array($type, $vulnsIds))
@@ -281,6 +282,18 @@ function createPdfReport($testId, &$fileName)
 							$html .= "<b>URL Requested:</b> $attackStr<br>";
 						else if ($type == 'autoc')
 							$html .= "<b>Input Name:</b> $attackStr<br>";
+
+						if ($currentVuln->getAiNote() !== null) {
+							$noteData = json_decode($currentVuln->getAiNote(), true);
+							if ($noteData && isset($noteData['confidence']) && isset($noteData['explanation'])) {
+								$html .= "<br><b>🤖 AI-Assisted Note:</b><br>";
+								$html .= "<i>Confidence (True Positive): " . htmlspecialchars($noteData['confidence']) . "</i><br>";
+								$html .= "<i>" . htmlspecialchars($noteData['explanation']) . "</i><br>";
+							} else {
+								$html .= "<br><b>🤖 AI-Assisted Note:</b><br>";
+								$html .= "<i>" . htmlspecialchars($currentVuln->getAiNote()) . "</i><br>";
+							}
+						}
 
 						$html .= '<br>';
 					}

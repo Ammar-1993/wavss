@@ -31,7 +31,8 @@ CREATE TABLE `test_results` (
   `type` text NOT NULL,
   `method` text NOT NULL,
   `url` text NOT NULL,
-  `attack_str` text NOT NULL
+  `attack_str` text NOT NULL,
+  `ai_note` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Table structure for table `users`

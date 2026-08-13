@@ -25,6 +25,7 @@ if($result)
 			$method = strtoupper($row->method);
 			$url = $row->url;
 			$info = $row->attack_str;
+			$ai_note = $row->ai_note;
 			
 			if($type == 'rxss')
 			{
@@ -81,7 +82,21 @@ if($result)
 			$urlHtml = htmlspecialchars($url);
 			echo "$method $urlHtml<br>";
 			$infoHtml = htmlspecialchars($info);
-			echo "$infoHtml</p>";
+			echo "$infoHtml";
+			
+			if ($ai_note !== null) {
+				$noteData = json_decode($ai_note, true);
+				echo "<div class='alert alert-info mt-2 p-2' style='font-size: 0.9em;'>";
+				echo "<strong>🤖 AI-Assisted Note:</strong><br>";
+				if ($noteData && isset($noteData['confidence'])) {
+					echo "<em>Confidence (True Positive): " . htmlspecialchars($noteData['confidence']) . "</em><br>";
+					echo "<em>" . htmlspecialchars($noteData['explanation']) . "</em>";
+				} else {
+					echo "<em>" . htmlspecialchars($ai_note) . "</em>";
+				}
+				echo "</div>";
+			}
+			echo "</p>";
 		}	
 		$result->free();
 		$db->close();
