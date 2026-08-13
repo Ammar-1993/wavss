@@ -7,21 +7,19 @@ require_once($currentDir . 'scanner/functions/databaseFunctions.php');
 $pageTitle = 'WAVSS - Login';
 require_once($currentDir . 'templates/header.php');
 ?>
-<!--SubPage Toprow Begin-->
-<div id="toprowsub">
-  <div class="center">
-    <h2>Welcome</h2>
-  </div>
-</div>
-<!--Toprow END-->
-<!--SubPage MiddleRow Begin-->
-<div id="midrow">
-  <div class="center">
-    <div class="textbox2">
-      <p><?php if(isset($loginMsg)) echo $loginMsg; ?></p>
+<div class="container my-5 flex-grow-1">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h2 class="h5 mb-0">Welcome</h2>
+        </div>
+        <div class="card-body text-center p-4">
+          <p class="lead mb-0"><?php if(isset($loginMsg)) echo $loginMsg; ?></p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-<!--MiddleRow END-->
 
 <?php require_once($currentDir . 'templates/footer.php'); ?>

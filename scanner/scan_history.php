@@ -30,7 +30,7 @@ if(isset($_SESSION['username']))
 			echo 'You have not performed any previous scans';
 		else
 		{
-			echo '<table border="1" width="900"><tr><th>ID</th><th>Start Time</th><th>URL</th><th>No. Vulnerabilities</th><th>Report</th></tr>';
+			echo '<table class="table table-bordered table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Start Time</th><th>URL</th><th>No. Vulnerabilities</th><th>Report</th></tr></thead><tbody>';
 			for($i=0; $i<$numRows; $i++)
 			{
 				$row = $result->fetch_object();
@@ -48,18 +48,18 @@ if(isset($_SESSION['username']))
 				if($resultTwo)
 					$numVulns = $resultTwo->num_rows;
 			
-				$report = '<a href="scanner/reports/Test_' . $id . '.pdf" target="_blank">View</a>';
+				$report = '<a href="scanner/reports/Test_' . $id . '.pdf" target="_blank" class="btn btn-sm btn-outline-primary">View</a>';
 				
 				echo '<tr>';
-				echo "<td align='center'>$id</td>";
-				echo "<td align='left'>$startTimeFormatted</td>";
-				echo "<td align='left'>$url</td>";
-				echo "<td align='center'>$numVulns</td>";
-				echo "<td align='center'>$report</td>";
+				echo "<td class='text-center'>$id</td>";
+				echo "<td>$startTimeFormatted</td>";
+				echo "<td>$url</td>";
+				echo "<td class='text-center'>$numVulns</td>";
+				echo "<td class='text-center'>$report</td>";
 				echo '</tr>';
 			
 			}
-			echo '</table>';
+			echo '</tbody></table>';
 
 		}
 	

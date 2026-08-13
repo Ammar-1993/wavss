@@ -22,18 +22,14 @@ require_once($currentDir . 'scanner/classes/Logger.php');
 if (isset($_SESSION['username'])) {
 	$username = $_SESSION['username'];
 
-	echo '<body>
-			<form id="form1" name="form1" method="post" >
+	echo '<form id="form1" name="form1" method="post" class="mb-4">
 			  <input type="hidden" name="csrf_token" value="' . htmlspecialchars(csrf_token()) . '">
-			  <p>Enter URL to crawl:</p>
-			  <p>
-				<label for="urlToCrawl"></label>
-				<input type="text" size="40" name="urlToCrawl" id="urlToCrawl" />
-			  </p>
-			  <p>
-				<input type="submit" class="button" name="submit" id="submit" value="Start Crawl" />
-			  </p>
-			</form>';
+			  <div class="mb-3">
+				<label for="urlToCrawl" class="form-label">Enter URL to crawl:</label>
+				<input type="text" class="form-control" name="urlToCrawl" id="urlToCrawl" />
+			  </div>
+			  <button type="submit" class="btn btn-primary" name="submit" id="submit" value="Start Crawl">Start Crawl</button>
+		  </form>';
 
 	if (isset($_POST['urlToCrawl'])) {
 		if (!csrf_verify($_POST['csrf_token'] ?? '')) {
@@ -129,8 +125,8 @@ if (isset($_SESSION['username'])) {
 			echo 'Please enter the URL first.';
 	}
 
-	echo '<div id="status"></div><br>';
-	echo '<div id="urlsFound"></div><br>';
+	echo '<div id="status" class="mt-4"></div>';
+	echo '<div id="urlsFound" class="mt-3"></div>';
 } else
 	echo 'You are not logged in. Please log in to use this feature.';
 ?>

@@ -120,59 +120,77 @@ $pageTitle = 'WAVSS - Verify Domain Ownership';
 require_once($currentDir . 'templates/header.php');
 ?>
     
-    <div id="toprowsub">
-        <div class="center">
-            <h2>Domain Verification</h2>
-        </div>
+<div class="container my-5 flex-grow-1">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h2 class="h5 mb-0">Domain Verification</h2>
     </div>
-    
-    <div id="midrow">
-        <div class="center">
-            <div class="textbox2" style="padding:20px; background:#fff; border-radius:5px;">
-                <?php if ($msg) echo "<p>$msg</p>"; ?>
+    <div class="card-body p-4">
+      <?php if ($msg) { 
+          $alertClass = strpos($msg, 'color:red') !== false ? 'alert-danger' : 'alert-info';
+          $cleanMsg = strip_tags($msg, '<b><strong>');
+          echo "<div class='alert $alertClass'>$cleanMsg</div>";
+      } ?>
                 
-                <h3>Add a New Domain</h3>
-                <form method="post">
+      <h3 class="h5 mt-4 mb-3">Add a New Domain</h3>
+      <form method="post" class="d-flex gap-2 mb-4">
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
+        <input type="text" name="domain_to_add" class="form-control" style="max-width: 300px;" placeholder="e.g. example.com" required>
+        <button type="submit" class="btn btn-primary">Add Domain</button>
+      </form>
+      
+      <hr class="my-4">
+      
+      <h3 class="h5 mb-3">Your Registered Domains</h3>
+      <div class="table-responsive mb-4">
+        <table class="table table-bordered table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Domain</th>
+              <th>Status</th>
+              <th>Verification Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php while ($row = $domains->fetch_object()): ?>
+            <tr>
+              <td><?php echo htmlspecialchars($row->domain); ?></td>
+              <td>
+                <?php if ($row->verified): ?>
+                  <span class="badge bg-success">Verified</span>
+                <?php else: ?>
+                  <span class="badge bg-warning text-dark">Unverified</span>
+                <?php endif; ?>
+              </td>
+              <td>
+                <?php if (!$row->verified): ?>
+                  <p class="mb-2 text-muted">To prove ownership, complete one of the following methods:</p>
+                  <ul class="list-unstyled mb-3">
+                    <li class="mb-2">
+                      <strong>DNS:</strong> Create a TXT record for <code><?php echo htmlspecialchars($row->domain); ?></code> containing: <br>
+                      <code class="bg-light border rounded px-2 py-1 d-inline-block mt-1">wavss-verification=<?php echo htmlspecialchars($row->verification_token); ?></code>
+                    </li>
+                    <li>
+                      <strong>File:</strong> Upload a file to <code>http://<?php echo htmlspecialchars($row->domain); ?>/wavss-verify.txt</code> containing just: <br>
+                      <code class="bg-light border rounded px-2 py-1 d-inline-block mt-1"><?php echo htmlspecialchars($row->verification_token); ?></code>
+                    </li>
+                  </ul>
+                  <form method="post">
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
-                    <input type="text" name="domain_to_add" placeholder="e.g. example.com" required>
-                    <input type="submit" class="button" value="Add Domain">
-                </form>
-                
-                <hr style="margin:20px 0;">
-                
-                <h3>Your Registered Domains</h3>
-                <table width="100%" border="1" cellpadding="5" cellspacing="0" style="text-align:left; border-collapse:collapse;">
-                    <tr style="background:#f4f4f4;">
-                        <th>Domain</th>
-                        <th>Status</th>
-                        <th>Verification Actions</th>
-                    </tr>
-                    <?php while ($row = $domains->fetch_object()): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($row->domain); ?></td>
-                        <td><?php echo $row->verified ? '<strong style="color:green;">Verified</strong>' : '<strong style="color:orange;">Unverified</strong>'; ?></td>
-                        <td>
-                            <?php if (!$row->verified): ?>
-                                <p style="margin-top:0;">To prove ownership, complete one of the following methods:</p>
-                                <ul>
-                                    <li><strong>DNS:</strong> Create a TXT record for <code><?php echo htmlspecialchars($row->domain); ?></code> containing: <br><code>wavss-verification=<?php echo htmlspecialchars($row->verification_token); ?></code></li>
-                                    <li><strong>File:</strong> Upload a file to <code>http://<?php echo htmlspecialchars($row->domain); ?>/wavss-verify.txt</code> containing just: <br><code><?php echo htmlspecialchars($row->verification_token); ?></code></li>
-                                </ul>
-                                <form method="post" style="margin-top:10px;">
-                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
-                                    <input type="hidden" name="verify_domain_id" value="<?php echo $row->id; ?>">
-                                    <input type="submit" class="button" value="Verify now">
-                                </form>
-                            <?php else: ?>
-                                <em>No further action required.</em>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                    <?php endwhile; ?>
-                </table>
-                <br>
-                <a href="scanner.php" class="button">Back to Scanner</a>
-            </div>
-        </div>
+                    <input type="hidden" name="verify_domain_id" value="<?php echo $row->id; ?>">
+                    <button type="submit" class="btn btn-sm btn-outline-primary">Verify now</button>
+                  </form>
+                <?php else: ?>
+                  <em class="text-muted">No further action required.</em>
+                <?php endif; ?>
+              </td>
+            </tr>
+            <?php endwhile; ?>
+          </tbody>
+        </table>
+      </div>
+      <a href="scanner.php" class="btn btn-secondary">Back to Scanner</a>
     </div>
+  </div>
+</div>
 <?php require_once($currentDir . 'templates/footer.php'); ?>

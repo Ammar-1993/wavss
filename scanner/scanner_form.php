@@ -54,80 +54,77 @@ if (isset($_SESSION['username'])) {
 ?>
 
 	<body>
-		<form id="form1" name="form1" method="post">
+		<form id="form1" name="form1" method="post" class="mb-4">
 			<input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
-			<p>Enter URL to scan:</p>
-			<p>
-				<label for="urlToScan"></label>
-				<input type="text" size="40" name="urlToScan" id="urlToScan" />
-				<br>
-				<a href="javascript:sizeTbl('block')">
-					<font size="3">Options</font>
-				</a>
-			</p>
-			<div id=tbl name=tbl style="overflow:hidden;display:none">
-				<a href="javascript:checkedAll(form1)">
-					<font size="3">Check/Uncheck All</font>
-				</a><br><br>
-				Please select which vulnerabilities to test for:<br>
-				<table border="0">
-					<tr>
-						<td><input type="checkbox" name="rxss" value="rxss" checked /></td>
-						<td>Reflected Cross-Site Scripting</td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="sxss" value="sxss" checked /></td>
-						<td>Stored Cross-Site Scripting </td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="sqli" value="sqli" checked /></td>
-						<td>Standard SQL Injection</td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="basqli" value="basqli" checked /></td>
-						<td>Broken Authentication using SQL Injection</td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="autoc" value="autoc" checked /></td>
-						<td>Autocomplete enabled on sensitive input fields</td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="idor" value="idor" checked /></td>
-						<td>(Potientially Insecure) Direct Object References</td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="dirlist" value="dirlist" checked /></td>
-						<td>Directory Listing Enabled</td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="bannerdis" value="bannerdis" checked /></td>
-						<td>HTTP Banner Disclosure</td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="sslcert" value="sslcert" checked /></td>
-						<td>SSL Certificate not trusted</td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="unredir" value="unredir" checked /></td>
-						<td>Unvalidated Redirects</td>
-					</tr>
-				</table>
-				<br>
-				<br>Other Options:<br>
-				<table border="0">
-					<tr>
-						<td><input type="checkbox" name="emailpdf" value="emailpdf" checked /></td>
-						<td>Email PDF Report</td>
-					</tr>
-					<tr>
-						<td><input type="checkbox" name="crawlurl" value="crawlurl" checked /></td>
-						<td>Crawl Website</td>
-					</tr>
-				</table>
+			<div class="mb-3">
+				<label for="urlToScan" class="form-label">Enter URL to scan:</label>
+				<input type="text" class="form-control" name="urlToScan" id="urlToScan" />
+				<div class="mt-2">
+					<a href="javascript:sizeTbl('block')" class="text-decoration-none">Options</a>
+				</div>
 			</div>
-			<p>
-				<input type="submit" class="button" name="submit" id="submit" value="Start Scan" />
-			</p>
+			<div id="tbl" name="tbl" style="display:none" class="mb-4 p-3 border rounded bg-light">
+				<div class="mb-3">
+					<a href="javascript:checkedAll(form1)" class="btn btn-outline-secondary btn-sm">Check/Uncheck All</a>
+				</div>
+				<p class="fw-bold mb-2">Please select which vulnerabilities to test for:</p>
+				<div class="row mb-3">
+					<div class="col-md-6">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" name="rxss" value="rxss" checked id="chk_rxss">
+							<label class="form-check-label" for="chk_rxss">Reflected Cross-Site Scripting</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" name="sxss" value="sxss" checked id="chk_sxss">
+							<label class="form-check-label" for="chk_sxss">Stored Cross-Site Scripting</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" name="sqli" value="sqli" checked id="chk_sqli">
+							<label class="form-check-label" for="chk_sqli">Standard SQL Injection</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" name="basqli" value="basqli" checked id="chk_basqli">
+							<label class="form-check-label" for="chk_basqli">Broken Authentication using SQL Injection</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" name="autoc" value="autoc" checked id="chk_autoc">
+							<label class="form-check-label" for="chk_autoc">Autocomplete enabled on sensitive input fields</label>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" name="idor" value="idor" checked id="chk_idor">
+							<label class="form-check-label" for="chk_idor">(Potientially Insecure) Direct Object References</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" name="dirlist" value="dirlist" checked id="chk_dirlist">
+							<label class="form-check-label" for="chk_dirlist">Directory Listing Enabled</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" name="bannerdis" value="bannerdis" checked id="chk_bannerdis">
+							<label class="form-check-label" for="chk_bannerdis">HTTP Banner Disclosure</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" name="sslcert" value="sslcert" checked id="chk_sslcert">
+							<label class="form-check-label" for="chk_sslcert">SSL Certificate not trusted</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" name="unredir" value="unredir" checked id="chk_unredir">
+							<label class="form-check-label" for="chk_unredir">Unvalidated Redirects</label>
+						</div>
+					</div>
+				</div>
+				<p class="fw-bold mb-2">Other Options:</p>
+				<div class="form-check">
+					<input class="form-check-input" type="checkbox" name="emailpdf" value="emailpdf" checked id="chk_emailpdf">
+					<label class="form-check-label" for="chk_emailpdf">Email PDF Report</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="checkbox" name="crawlurl" value="crawlurl" checked id="chk_crawlurl">
+					<label class="form-check-label" for="chk_crawlurl">Crawl Website</label>
+				</div>
+			</div>
+			<button type="submit" class="btn btn-primary" name="submit" id="submit" value="Start Scan">Start Scan</button>
 		</form>
 
 	<?php
@@ -274,8 +271,8 @@ if (isset($_SESSION['username'])) {
 			echo 'Please enter the URL first.';
 	}
 
-	echo '<div id="status"></div><br>';
-	echo '<div id="scanstatus"></div><br>';
+	echo '<div id="status" class="mt-4"></div>';
+	echo '<div id="scanstatus" class="mt-3"></div>';
 } else
 	echo 'You are not logged in. Please log in to use this feature.';
 	?>

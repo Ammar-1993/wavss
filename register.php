@@ -81,29 +81,27 @@ if (isset($_SESSION['username'])) {
 $pageTitle = 'WAVSS - Register';
 require_once($currentDir . 'templates/header.php');
 ?>
-  <!--SubPage Toprow Begin-->
-  <div id="toprowsub">
-    <div class="center">
-      <h2>Sign Up</h2>
-    </div>
-  </div>
-  <!--Toprow END-->
-  <!--SubPage MiddleRow Begin-->
-  <div id="midrow">
-    <div class="center">
-      <div class="textbox2">
-        <?php
-        if (isset($message)) {
-          echo "<p>$message</p>";
-        }
+  <div class="container my-5 flex-grow-1">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h2 class="h5 mb-0">Sign Up</h2>
+          </div>
+          <div class="card-body p-4">
+            <?php
+            if (isset($message)) {
+              echo "<div class='alert alert-info'>$message</div>";
+            }
 
-        if ($displayForm) {
-          require_once('register_form.html'); // Display the form
-        }
-        ?>
+            if ($displayForm) {
+              require_once('register_form.html'); // Display the form
+            }
+            ?>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <!--MiddleRow END-->
 
 <?php require_once($currentDir . 'templates/footer.php'); ?>

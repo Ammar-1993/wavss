@@ -1,23 +1,23 @@
-<form action="register.php" method="post" class="wavss-form wavss-register-form">
+<form action="register.php" method="post" id="form1">
     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
-    <div class="form-group">
-        <label for="regusername">Username</label>
-        <input id="regusername" name="regusername" type="text" placeholder="Enter your desired username" required autocomplete="username" />
+    <div class="mb-3">
+        <label for="regusername" class="form-label">Username</label>
+        <input id="regusername" name="regusername" type="text" class="form-control" placeholder="Enter your desired username" required autocomplete="username" />
     </div>
-    <div class="form-group">
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" placeholder="Enter your email address" required autocomplete="email" />
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input id="email" name="email" type="email" class="form-control" placeholder="Enter your email address" required autocomplete="email" />
     </div>
-    <div class="form-group">
-        <label for="regpassword">Password</label>
-        <input id="regpassword" name="regpassword" type="password" placeholder="Choose a strong password (min 8 chars, letters & numbers)" required autocomplete="new-password" />
+    <div class="mb-3">
+        <label for="regpassword" class="form-label">Password</label>
+        <input id="regpassword" name="regpassword" type="password" class="form-control" placeholder="Choose a strong password (min 8 chars, letters & numbers)" required autocomplete="new-password" />
     </div>
-    <div class="form-group">
-        <label for="regpassword2">Confirm Password</label>
-        <input id="regpassword2" name="regpassword2" type="password" placeholder="Re-enter your password" required autocomplete="new-password" />
+    <div class="mb-3">
+        <label for="regpassword2" class="form-label">Confirm Password</label>
+        <input id="regpassword2" name="regpassword2" type="password" class="form-control" placeholder="Re-enter your password" required autocomplete="new-password" />
     </div>
-    <div class="form-actions">
-        <button type="submit" name="submit" class="button button-primary">Register</button>
-        <button type="reset" name="reset" class="button button-secondary">Reset</button>
+    <div class="d-grid gap-2">
+        <button type="submit" name="submit" class="btn btn-primary">Register</button>
+        <button type="reset" name="reset" class="btn btn-secondary">Reset</button>
     </div>
 </form>

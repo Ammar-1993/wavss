@@ -1,23 +1,7 @@
-
-<form action="login.php" method="post">
+<form action="login.php" method="post" class="d-flex gap-2 align-items-center mb-0">
 	<input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(csrf_token()); ?>">
-	<table>
-	  <tr>
-		<td>
-		  <input name="email" type="email" placeholder="Email" required autocomplete="email" />
-		</td>
-	  </tr>
-	  <tr>
-		<td>
-		  <input name="password" type="password" placeholder="Password" required autocomplete="current-password" />
-		</td>
-	  </tr>
-	  <tr>
-		<td>
-		  <input type="submit" name="submit" class="button" value="Log in" />
-		  <input type="button" class="button" value="Register" onclick="window.location.href='register.php'" />
-		</td>
-	  </tr>
-	</table>
-  </form>
-  
+	<input name="email" type="email" class="form-control form-control-sm" placeholder="Email" required autocomplete="email" />
+	<input name="password" type="password" class="form-control form-control-sm" placeholder="Password" required autocomplete="current-password" />
+	<button type="submit" name="submit" class="btn btn-primary btn-sm text-nowrap">Log in</button>
+	<a href="register.php" class="btn btn-outline-light btn-sm">Register</a>
+</form>
