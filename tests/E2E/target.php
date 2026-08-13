@@ -1,7 +1,12 @@
 <?php
 // tests/E2E/target.php
 // A dummy vulnerable script used ONLY for E2E testing of the WAVSS scanner.
-$db = new mysqli('db', 'root', '12345678', 'wavssv3_db');
+$host = getenv('DB_HOST') ?: 'db';
+$user = getenv('DB_USER') ?: 'root';
+$pass = getenv('DB_PASSWORD') ?: '12345678';
+$dbname = getenv('DB_NAME') ?: 'wavssv3_db';
+
+$db = new mysqli($host, $user, $pass, $dbname);
 if ($db->connect_error) {
     die("Connection failed: " . $db->connect_error);
 }
