@@ -25,6 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify_code'])) {
         die('CSRF token validation failed');
     }
     
+    if (!isset($_SESSION['totp_attempts'])) {
+        $_SESSION['totp_attempts'] = 0;
+    }
+    
     $code = trim($_POST['verify_code']);
     
     // Fetch the secret for this user
@@ -40,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify_code'])) {
         $valid = $google2fa->verifyKey($row->totp_secret, $code);
         
         if ($valid) {
+            $_SESSION['totp_attempts'] = 0;
             $_SESSION['username'] = $pendingUsername;
             if (!empty($pendingEmail)) {
                 $_SESSION['email'] = $pendingEmail;
@@ -49,6 +54,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify_code'])) {
             header('Location: index.php');
             exit;
         } else {
+            $_SESSION['totp_attempts']++;
+            sleep(1);
+            
+            if ($_SESSION['totp_attempts'] >= 5) {
+                unset($_SESSION['pending_2fa_username']);
+                unset($_SESSION['pending_2fa_email']);
+                unset($_SESSION['totp_attempts']);
+                $_SESSION['login_error'] = 'Too many failed 2FA attempts. Please log in again.';
+                header('Location: login.php');
+                exit;
+            }
+            
             $msg = 'Invalid code. Please try again.';
         }
     } else {

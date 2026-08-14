@@ -14,6 +14,7 @@ if (!preg_match('/Bearer\s(\S+)/i', $authHeader, $matches)) {
 }
 
 $apiKey = $matches[1];
+$hashedApiKey = hash('sha256', $apiKey);
 
 if (!connectToDb($db)) {
     http_response_code(500);
@@ -22,7 +23,7 @@ if (!connectToDb($db)) {
 }
 
 $stmt = $db->prepare("SELECT username FROM api_keys WHERE api_key = ?");
-$stmt->bind_param("s", $apiKey);
+$stmt->bind_param("s", $hashedApiKey);
 $stmt->execute();
 $res = $stmt->get_result();
 
@@ -38,7 +39,7 @@ $stmt->close();
 
 // Update last used
 $updateStmt = $db->prepare("UPDATE api_keys SET last_used_at = NOW() WHERE api_key = ?");
-$updateStmt->bind_param("s", $apiKey);
+$updateStmt->bind_param("s", $hashedApiKey);
 $updateStmt->execute();
 $updateStmt->close();
 

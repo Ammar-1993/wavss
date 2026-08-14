@@ -136,7 +136,7 @@ CREATE TABLE `domain_verifications` (
 CREATE TABLE `api_keys` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` text NOT NULL,
-  `api_key` varchar(40) NOT NULL,
+  `api_key` varchar(64) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_used_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),

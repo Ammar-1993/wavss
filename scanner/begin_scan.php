@@ -228,7 +228,10 @@ if (!empty(getenv('AI_API_KEY'))) {
 	$log->lwrite('Beginning AI triage on findings for test: ' . $testId);
 	updateStatus($db, "Running AI triage on findings...", $testId);
 
-	$res = $db->query("SELECT id, type, method, url, attack_str FROM test_results WHERE test_id = $testId AND ai_note IS NULL");
+	$selectStmt = $db->prepare("SELECT id, type, method, url, attack_str FROM test_results WHERE test_id = ? AND ai_note IS NULL");
+	$selectStmt->bind_param('i', $testId);
+	$selectStmt->execute();
+	$res = $selectStmt->get_result();
 	if ($res && $res->num_rows > 0) {
 		$updateStmt = $db->prepare("UPDATE test_results SET ai_note = ? WHERE id = ?");
 		while ($row = $res->fetch_object()) {
@@ -239,6 +242,7 @@ if (!empty(getenv('AI_API_KEY'))) {
 			}
 		}
 		$updateStmt->close();
+		$selectStmt->close();
 	}
 	$log->lwrite('Finished AI triage for test: ' . $testId);
 }

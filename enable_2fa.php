@@ -78,7 +78,16 @@ if (!$totpEnabled) {
         $secretKey
     );
     
-    $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' . urlencode($qrUrl);
+    // Generate the QR code locally as a base64 PNG data URI
+    $qrCode = \Endroid\QrCode\Builder\Builder::create()
+        ->writer(new \Endroid\QrCode\Writer\PngWriter())
+        ->data($qrUrl)
+        ->encoding(new \Endroid\QrCode\Encoding\Encoding('UTF-8'))
+        ->size(250)
+        ->margin(10)
+        ->build();
+        
+    $qrCodeUrl = $qrCode->getDataUri();
 }
 
 $pageTitle = 'WAVSS - Enable 2FA';

@@ -15,7 +15,14 @@ require_once($currentDir . 'templates/header.php');
           <h2 class="h5 mb-0">Welcome</h2>
         </div>
         <div class="card-body text-center p-4">
-          <p class="lead mb-0"><?php if(isset($loginMsg)) echo $loginMsg; ?></p>
+          <p class="lead mb-0 text-danger"><?php
+            if (isset($_SESSION['login_error'])) {
+                echo htmlspecialchars($_SESSION['login_error']);
+                unset($_SESSION['login_error']);
+            } elseif (isset($loginMsg)) {
+                echo htmlspecialchars($loginMsg);
+            }
+          ?></p>
         </div>
       </div>
     </div>

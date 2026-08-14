@@ -23,9 +23,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate'])) {
     }
     
     $newKey = bin2hex(random_bytes(20));
+    $hashedKey = hash('sha256', $newKey);
     
     $stmt = $db->prepare("INSERT INTO api_keys (username, api_key, created_at) VALUES (?, ?, NOW())");
-    $stmt->bind_param("ss", $username, $newKey);
+    $stmt->bind_param("ss", $username, $hashedKey);
     if ($stmt->execute()) {
         $msg = "New API key generated successfully. Please copy it now, as it will not be shown again.";
     } else {
