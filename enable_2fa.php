@@ -79,13 +79,14 @@ if (!$totpEnabled) {
     );
     
     // Generate the QR code locally as a base64 PNG data URI
-    $qrCode = \Endroid\QrCode\Builder\Builder::create()
-        ->writer(new \Endroid\QrCode\Writer\PngWriter())
-        ->data($qrUrl)
-        ->encoding(new \Endroid\QrCode\Encoding\Encoding('UTF-8'))
-        ->size(250)
-        ->margin(10)
-        ->build();
+    $builder = new \Endroid\QrCode\Builder\Builder(
+        writer: new \Endroid\QrCode\Writer\PngWriter(),
+        data: $qrUrl,
+        encoding: new \Endroid\QrCode\Encoding\Encoding('UTF-8'),
+        size: 250,
+        margin: 10
+    );
+    $qrCode = $builder->build();
         
     $qrCodeUrl = $qrCode->getDataUri();
 }
