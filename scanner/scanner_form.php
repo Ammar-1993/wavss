@@ -3,19 +3,7 @@ date_default_timezone_set('Asia/Riyadh');
 ?>
 
 <script type="text/javascript">
-	function beginScan(value, valueTwo, valueThree, valueFour, valueFive) {
-		fetch("scanner/begin_scan.php", {
-			method: 'POST',
-			body: new URLSearchParams({
-				specifiedUrl: value,
-				testId: valueTwo,
-				username: valueThree,
-				email: valueFour,
-				testCases: valueFive
-			}),
-			cache: 'no-store'
-		});
-	}
+
 
 
 	function sizeTbl(h) {
@@ -192,10 +180,11 @@ if (isset($_SESSION['username'])) {
 
 			$urlToScan = $_POST['urlToScan'];
 
-			$log->lwrite('Calling AJAX function beginCrawl()');
-			echo '<script type="text/javascript">';
-			echo "beginScan(" . json_encode($urlToScan, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . "," . json_encode($testId, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . "," . json_encode($username, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . "," . json_encode($email, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . ", " . json_encode($testCases, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . ");";
-			echo '</script>';
+			$log->lwrite('Queueing scan job in database');
+			$stmt = $db->prepare("INSERT INTO jobs (test_id, url, username, email, test_cases) VALUES (?, ?, ?, ?, ?)");
+			$stmt->bind_param("issss", $testId, $urlToScan, $username, $email, $testCases);
+			$stmt->execute();
+			$stmt->close();
 		} else
 			echo 'Please enter the URL first.';
 	}

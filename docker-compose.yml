@@ -9,6 +9,15 @@ services:
     depends_on:
       - db
 
+  worker:
+    build: .
+    command: php scripts/worker.php
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    depends_on:
+      - db
+
   db:
     image: mariadb:11
     restart: always

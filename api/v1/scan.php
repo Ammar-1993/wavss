@@ -64,21 +64,12 @@ if (!$scanInit['success']) {
 $testId = $scanInit['testId'];
 $testCases = 'rxss sxss sqli basqli autoc idor dirlist bannerdis sslcert unredir emailpdf crawlurl ';
 
-// Trigger the backend scan processor asynchronously via HTTP so the API request doesn't block for minutes
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'http://localhost/scanner/begin_scan.php');
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-    'specifiedUrl' => $urlToScan,
-    'testId' => $testId,
-    'username' => $username,
-    'email' => '',
-    'testCases' => $testCases
-]));
-// Set a 1-second timeout to abandon the request and close connection, letting the PHP script run in background
-curl_setopt($ch, CURLOPT_TIMEOUT, 1); 
-@curl_exec($ch);
-curl_close($ch);
+// Queue the scan job in the database
+$email = '';
+$stmt = $db->prepare("INSERT INTO jobs (test_id, url, username, email, test_cases) VALUES (?, ?, ?, ?, ?)");
+$stmt->bind_param("issss", $testId, $urlToScan, $username, $email, $testCases);
+$stmt->execute();
+$stmt->close();
 
 http_response_code(201);
 echo json_encode([

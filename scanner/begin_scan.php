@@ -47,18 +47,14 @@ require_once($currentDir . 'tests/testSslCertificate.php');
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../vendor/tecnickcom/tcpdf/tcpdf_autoconfig.php';
 
-$log = new Logger();
-$log->lfile($currentDir . 'logs/eventlogs');
+function runScan($testId, $urlToScan, $username, $email, $testCases) {
+	global $currentDir;
+	
+	$log = new Logger();
+	$log->lfile($currentDir . 'logs/eventlogs');
 
-$log->lwrite('Connecting to database');
-
-$connectionFlag = connectToDb($db);
-
-isset($_POST['specifiedUrl']) ? $urlToScan = $_POST['specifiedUrl'] : $urlToScan = '';
-isset($_POST['testId']) ? $testId = (int)$_POST['testId'] : $testId = 0;
-isset($_POST['username']) ? $username = $_POST['username'] : $username = 'User';
-isset($_POST['email']) ? $email = $_POST['email'] : $email = 'wavss@gmail.com';//admin address
-isset($_POST['testCases']) ? $testCases = $_POST['testCases'] : $testCases = '';//admin address
+	$log->lwrite('Connecting to database');
+	$connectionFlag = connectToDb($db);
 
 if(empty($urlToScan))
 {
@@ -273,4 +269,5 @@ else
 	updateStatus($db, "Scan is complete! The report is in your scan history.", $testId);
 	
 $db->close();
+}
 ?>

@@ -154,3 +154,20 @@ CREATE TABLE `scheduled_scans` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Table structure for table `jobs`
+CREATE TABLE `jobs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `test_id` int(11) NOT NULL,
+  `status` enum('pending','running','done','failed') NOT NULL DEFAULT 'pending',
+  `url` text NOT NULL,
+  `username` text NOT NULL,
+  `email` text NOT NULL,
+  `test_cases` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `started_at` timestamp NULL DEFAULT NULL,
+  `finished_at` timestamp NULL DEFAULT NULL,
+  `error_message` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `status_idx` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

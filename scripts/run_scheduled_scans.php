@@ -41,20 +41,12 @@ while ($row = $res->fetch_object()) {
         $testId = $scanInit['testId'];
         echo "Scan initiated successfully with testId {$testId}\n";
         
-        // Trigger the backend scan processor asynchronously
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'http://localhost/scanner/begin_scan.php');
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-            'specifiedUrl' => $row->url,
-            'testId' => $testId,
-            'username' => $row->username,
-            'email' => '',
-            'testCases' => $testCases
-        ]));
-        curl_setopt($ch, CURLOPT_TIMEOUT, 1); 
-        @curl_exec($ch);
-        curl_close($ch);
+        // Queue the scan job in the database
+        $email = '';
+        $stmt = $db->prepare("INSERT INTO jobs (test_id, url, username, email, test_cases) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("issss", $testId, $row->url, $row->username, $email, $testCases);
+        $stmt->execute();
+        $stmt->close();
     } else {
         echo "Failed to initialize scan: " . $scanInit['error'] . "\n";
     }
