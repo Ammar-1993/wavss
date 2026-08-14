@@ -9,13 +9,13 @@ error_reporting(E_ALL);
 $currentDir = './';
 
 // Inculde the phpcrawl-mainclass
-require_once($currentDir . "../crawler/PHPCrawl_2024/classes/phpcrawler.class.php");
-require_once($currentDir . "../crawler/PHPCrawl_2024/classes/mycrawler.php");
+require_once(__DIR__ . '/../crawler/PHPCrawl_2024/classes/phpcrawler.class.php');
+require_once(__DIR__ . '/../crawler/PHPCrawl_2024/classes/mycrawler.php');
 
 //Include parsing class and http library
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../vendor/simplehtmldom/simplehtmldom/simple_html_dom.php';
-require_once($currentDir . 'classes/httpclient-2024/http.php');
+require_once(__DIR__ . '/classes/httpclient-2024/http.php');
 
 //Include Entity Classes
 require_once($currentDir . 'classes/Form.php');

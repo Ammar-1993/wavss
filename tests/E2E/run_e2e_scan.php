@@ -39,12 +39,17 @@ echo "3. Logging in...\n";
 $html = request('/login.php');
 preg_match('/name="csrf_token" value="(.*?)"/', $html, $matches);
 $csrf = $matches[1];
-request('/login.php', [
+$loginRes = request('/login.php', [
     'csrf_token' => $csrf,
     'email' => $email,
     'password' => 'password123',
     'submit' => 'Login'
 ]);
+if (strpos($loginRes, 'successfully logged in') === false && strpos($loginRes, 'currently logged in') === false) {
+    echo "Login failed!\n";
+    echo $loginRes;
+    exit(1);
+}
 
 echo "4. Submitting scan for DVWA...\n";
 $html = request('/scanner.php');
@@ -64,6 +69,7 @@ if (preg_match('/scanStream\.php\?testId=(\d+)/', $res, $matches)) {
     file_put_contents(__DIR__ . '/last_test_id.txt', $testId);
 } else {
     echo "Failed to extract testId from scanner page.\n";
+    echo "Response was: " . $res . "\n";
     exit(1);
 }
 
