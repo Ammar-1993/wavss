@@ -63,18 +63,32 @@ WAVSS is a comprehensive, automated web-based vulnerability scanner designed to 
 
 ---
 
-## Recently Implemented Features
+## Implemented Features (Phases 0 - 5)
 
-- **Multi-factor Authentication:** TOTP-based 2FA for enhanced user security.
-- **REST API:** API support for integration with external security tools and headless execution.
-- **Scheduled Scans:** Scheduling functionality for automated periodic background scans.
-- **Historical Trends:** Visualization dashboard mapping vulnerability counts across past scans.
-- **AI-Assisted Triage:** Integration of AI-powered vulnerability evaluation for improved accuracy and false-positive detection.
-- **Mobile-Friendly UI:** A fully responsive Bootstrap 5 interface for scanning on-the-go.
+The WAVSS platform has undergone a massive modernization and security overhaul across six iterative phases:
+
+### Phase 0 & 1: Security Foundation & Code Quality
+- **Robust Authentication:** Argon2id password hashing with backward-compatible legacy upgrades, plus TOTP-based Two-Factor Authentication (2FA).
+- **Core App Security:** Comprehensive eradication of SQL Injection via strict Prepared Statements, XSS sanitization, and cryptographically secure CSRF tokens on all state-changing endpoints.
+- **Abuse Prevention:** Rate limiting, active-scan concurrency locks, and mandatory Domain Ownership verification via DNS/TXT to prevent unauthorized external scanning.
+- **Modern Standards:** Complete integration of Composer dependency management, Monolog rotating logs, and PHP-CS-Fixer styling enforcement.
+
+### Phase 2 & 3: Testing & CI/CD Stability
+- **Automated Validation:** Full PHPUnit test coverage for core business logic.
+- **Dockerization:** Fully containerized ecosystem (Apache/PHP 8.2 + MariaDB) with automated schema seeding and health checks.
+- **Continuous Integration:** GitHub Actions pipeline running strict PHP syntax linting, unit tests, and deterministic End-to-End (E2E) automated regression scans against an internal vulnerable target on every commit.
+
+### Phase 4 & 5: Modern Architecture & Core Modules
+- **True Background Queue:** Asynchronous job processing powered by a dedicated CLI worker daemon, replacing fragile HTTP self-triggering loops.
+- **Headless REST API:** Fully authenticated endpoints (`/scan`, `/status`, `/report`) supporting automated CI/CD triggering and dynamic output formatting (`JSON`, `HTML`, `PDF`).
+- **AI-Assisted Triage:** Optional Gemini LLM integration to analyze scan findings, evaluate confidence scores, and append plain-language explanations.
+- **Data Visualization & Scheduling:** Client-side Chart.js dashboards for tracking historical vulnerability trends, alongside an integrated cron-driven scheduler for recurring scans.
+- **Expanded Test Suite:** Added active detection for Missing Security Headers and Sensitive File Exposure (e.g., `.env`, `.git`), featuring strict content signature verification.
 
 ## Future Enhancements
 
 - Real-time threat intelligence feed integration.
+- *Note on Blind SQL Injection:* While the scanner detects error-based SQL Injection, automated detection of Blind/Time-based SQL Injection was intentionally excluded from manual implementation in this tool to prevent the generation of functional exploitation payloads (like `SLEEP()` commands) that can cause unintended denial-of-service on target servers. For testing Blind SQLi, we recommend using specialized open-source tools such as [sqlmap](https://sqlmap.org/) under controlled conditions.
   
 ---
 

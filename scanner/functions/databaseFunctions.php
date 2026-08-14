@@ -36,21 +36,7 @@ function insertTestResult($db, $testId, $type, $method, $url, $attackStr)
 	return $result;
 }
 
-//Generates the next test id
-//Return the next test id on success. Otherwise returns false.
-function generateNextTestId($db)
-{
-	$query = "SELECT MAX(id) FROM tests";
-	$result = $db->query($query);
-	if (!$result)
-		return $result;
-
-	$row = $result->fetch_array();
-
-	$maxId = $row[0] + 1;
-	//$maxId = $row->id;//or else $row->MAX(id)
-	return $maxId;
-}
+// generateNextTestId is deprecated. Using AUTO_INCREMENT in DB instead.
 
 //Adds 1 to the current number of HTTP requests sent
 //Returns true on success, false on failure
@@ -72,9 +58,13 @@ function initializeNewScan($db, $username, $urlToScan, $skipConcurrencyCheck = f
 		$parsedHost = parse_url("http://" . $urlToScan, PHP_URL_HOST);
 	}
 	
-	$isLocal = in_array(strtolower($parsedHost), ['localhost', '127.0.0.1', '::1', '[::1]', 'dvwa']);
+	$isLocal = in_array(strtolower($parsedHost), ['localhost', '127.0.0.1', '::1', '[::1]', 'dvwa', 'app']);
 	
-	if (!$isLocal) {
+	if ($isLocal && getenv('APP_ENV') !== 'testing') {
+		return ['success' => false, 'error' => "Scanning internal or reserved IP addresses is not permitted."];
+	}
+
+	if (!($isLocal && getenv('APP_ENV') === 'testing')) {
 		$verifyQuery = "SELECT id FROM domain_verifications WHERE username = ? AND domain = ? AND verified = 1";
 		$verifyStmt = $db->prepare($verifyQuery);
 		$verifyStmt->bind_param('ss', $username, $parsedHost);
@@ -110,22 +100,17 @@ function initializeNewScan($db, $username, $urlToScan, $skipConcurrencyCheck = f
 		}
 	}
 
-	$nextId = generateNextTestId($db);
-
-	if (!$nextId) {
-		return ['success' => false, 'error' => "Failed to generate next test ID."];
-	}
-
-	$testId = $nextId;
 	$now = time();
-	$query = "INSERT into tests(id,status,numUrlsFound,type,num_requests_sent,start_timestamp,finish_timestamp,scan_finished,url,username,urls_found) VALUES(?, 'Creating profile for new scan...', 0, 'scan', 0, ?, ?, 0, ?, ?, '')";
+	$query = "INSERT into tests(status,numUrlsFound,type,num_requests_sent,start_timestamp,finish_timestamp,scan_finished,url,username,urls_found) VALUES('Creating profile for new scan...', 0, 'scan', 0, ?, ?, 0, ?, ?, '')";
 	$stmt = $db->prepare($query);
-	$stmt->bind_param('iiiss', $nextId, $now, $now, $urlToScan, $username);
+	$stmt->bind_param('iiss', $now, $now, $urlToScan, $username);
 	$result = $stmt->execute();
-	$stmt->close();
 	if (!$result) {
+		$stmt->close();
 		return ['success' => false, 'error' => "Problem inserting a new test into the database. Please try again."];
 	}
+	$testId = $stmt->insert_id;
+	$stmt->close();
 
 	updateStatus($db, 'Pending...', $testId);
 

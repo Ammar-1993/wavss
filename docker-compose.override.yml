@@ -1,0 +1,7 @@
+services:
+  app:
+    volumes:
+      - ./tests:/var/www/html/tests
+  worker:
+    volumes:
+      - ./tests:/var/www/html/tests

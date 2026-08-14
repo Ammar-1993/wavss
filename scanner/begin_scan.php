@@ -42,6 +42,8 @@ require_once($currentDir . 'tests/testDirectoryListingEnabled.php');
 require_once($currentDir . 'tests/testHttpBannerDisclosure.php');
 require_once($currentDir . 'tests/testAutoComplete.php');
 require_once($currentDir . 'tests/testSslCertificate.php');
+require_once($currentDir . 'tests/testSecurityHeaders.php');
+require_once($currentDir . 'tests/testSensitiveFileExposure.php');
 
 //Include PDF generator
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -143,6 +145,28 @@ if(stristr($testCases,' dirlist ') !== false)
 	testDirectoryListingEnabled($urlsFound[0], $siteBeingTested, $testId, $crawlUrlFlag); //The first URL in the array is always the full domain name e.g. http://www.abc.com
 	$log->lwrite("Finished testing $urlToScan for Directory Listing enabled for test: $testId");
 	updateStatus($db, "Finished testing $urlToScan for Directory Listing enabled...", $testId);
+}
+
+if(stristr($testCases,' secheaders ') !== false)
+{
+	$log->lwrite("Beginning testing $urlToScan for Missing Security Headers");
+	if(!$crawlUrlFlag)
+		testSecurityHeaders($urlsFound[0], $testId); 
+	else
+		testSecurityHeaders($siteBeingTested, $testId); 
+	$log->lwrite("Finished testing $urlToScan for Missing Security Headers for test: $testId");
+	updateStatus($db, "Finished testing $urlToScan for Missing Security Headers...", $testId);
+}
+
+if(stristr($testCases,' fileexposure ') !== false)
+{
+	$log->lwrite("Beginning testing $urlToScan for Sensitive File Exposure");
+	if(!$crawlUrlFlag)
+		testSensitiveFileExposure($urlsFound[0], $testId); 
+	else
+		testSensitiveFileExposure($siteBeingTested, $testId); 
+	$log->lwrite("Finished testing $urlToScan for Sensitive File Exposure for test: $testId");
+	updateStatus($db, "Finished testing $urlToScan for Sensitive File Exposure...", $testId);
 }
 
 if(stristr($testCases,' idor ') !== false)

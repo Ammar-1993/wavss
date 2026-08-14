@@ -20,6 +20,9 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . /var/www/html/
 
+# Remove tests directory to prevent exposing dummy E2E targets to production
+RUN rm -rf /var/www/html/tests
+
 # Ensure directories (like logs, reports) exist and are writable by the web server
 RUN mkdir -p /var/www/html/scanner/reports \
              /var/www/html/scanner/logs \

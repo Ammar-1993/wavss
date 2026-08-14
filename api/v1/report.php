@@ -69,19 +69,38 @@ if (!$test->scan_finished) {
     exit;
 }
 
-$reportPath = __DIR__ . '/../../scanner/reports/Test_' . $testId . '.pdf';
+$format = isset($_GET['format']) ? strtolower($_GET['format']) : 'pdf';
 
-if (!file_exists($reportPath)) {
-    http_response_code(404);
+if ($format === 'json') {
+    require_once(__DIR__ . '/../../scanner/functions/createJsonReport.php');
+    $jsonOutput = createJsonReport($testId);
     header('Content-Type: application/json');
-    echo json_encode(['error' => 'Report file not found.']);
+    header('Content-Disposition: attachment; filename="WAVSS_Report_Test_' . $testId . '.json"');
+    echo $jsonOutput;
+    exit;
+} elseif ($format === 'html') {
+    require_once(__DIR__ . '/../../scanner/functions/createHtmlReport.php');
+    $htmlOutput = createHtmlReport($testId);
+    header('Content-Type: text/html');
+    header('Content-Disposition: attachment; filename="WAVSS_Report_Test_' . $testId . '.html"');
+    echo $htmlOutput;
+    exit;
+} else {
+    // Default to PDF
+    $reportPath = __DIR__ . '/../../scanner/reports/Test_' . $testId . '.pdf';
+
+    if (!file_exists($reportPath)) {
+        http_response_code(404);
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'Report file not found.']);
+        exit;
+    }
+
+    // Serve the PDF binary
+    header('Content-Type: application/pdf');
+    header('Content-Disposition: attachment; filename="WAVSS_Report_Test_' . $testId . '.pdf"');
+    header('Content-Length: ' . filesize($reportPath));
+    header('Cache-Control: no-cache, must-revalidate');
+    readfile($reportPath);
     exit;
 }
-
-// Serve the PDF binary
-header('Content-Type: application/pdf');
-header('Content-Disposition: attachment; filename="WAVSS_Report_Test_' . $testId . '.pdf"');
-header('Content-Length: ' . filesize($reportPath));
-header('Cache-Control: no-cache, must-revalidate');
-readfile($reportPath);
-exit;

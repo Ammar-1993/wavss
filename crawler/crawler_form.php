@@ -50,29 +50,21 @@ if (isset($_SESSION['username'])) {
 				return;
 			}
 
-			$log->lwrite('Generating next test ID');
-			$nextId = generateNextTestId($db);
-
-			if (!$nextId) {
-				$log->lwrite('Next ID generated is null');
-				echo 'Next ID generated is null';
+			$now = time();
+			$query = "INSERT into tests(status,numUrlsFound,type,num_requests_sent,start_timestamp,finish_timestamp,scan_finished,url,username,urls_found,duration) VALUES('Creating profile for new crawl...', 0, 'crawl', 0, ?, ?, 0, ?, ?, '', 0)";
+			$stmt = $db->prepare($query);
+			$stmt->bind_param('iiss', $now, $now, $urlToCrawl, $username);
+			$result = $stmt->execute();
+			
+			if (!$result) {
+				$log->lwrite("Problem executing query for new crawl.");
+				echo 'Problem inserting a new test into the database. Please try again.';
+				$stmt->close();
 				return;
 			} else {
-				$log->lwrite("Next ID generated is $nextId");
-				$testId = $nextId;
-				$now = time();
-				$query = "INSERT into tests(id,status,numUrlsFound,type,num_requests_sent,start_timestamp,finish_timestamp,scan_finished,url,username,urls_found) VALUES(?, 'Creating profile for new crawl...', 0, 'crawl', 0, ?, ?, 0, ?, ?, '')";
-				$stmt = $db->prepare($query);
-				$stmt->bind_param('iiiss', $nextId, $now, $now, $urlToCrawl, $username);
-				$result = $stmt->execute();
+				$testId = $stmt->insert_id;
 				$stmt->close();
-				if (!$result) {
-					$log->lwrite("Problem executing query for new crawl.");
-					echo 'Problem inserting a new test into the database. Please try again.';
-					return;
-				} else {
-					$log->lwrite("Successfully executed query for new crawl.");
-				}
+				$log->lwrite("Successfully executed query for new crawl. ID: $testId");
 			}
 
 			updateStatus($db, 'Pending...', $testId);

@@ -24,9 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['generate'])) {
     
     $newKey = bin2hex(random_bytes(20));
     $hashedKey = hash('sha256', $newKey);
+    $prefix = substr($newKey, 0, 8);
     
-    $stmt = $db->prepare("INSERT INTO api_keys (username, api_key, created_at) VALUES (?, ?, NOW())");
-    $stmt->bind_param("ss", $username, $hashedKey);
+    $stmt = $db->prepare("INSERT INTO api_keys (username, api_key, prefix, created_at) VALUES (?, ?, ?, NOW())");
+    $stmt->bind_param("sss", $username, $hashedKey, $prefix);
     if ($stmt->execute()) {
         $msg = "New API key generated successfully. Please copy it now, as it will not be shown again.";
     } else {
@@ -83,13 +84,13 @@ require_once($currentDir . 'templates/header.php');
               </thead>
               <tbody>
                 <?php
-                $stmt = $db->prepare("SELECT api_key, created_at, last_used_at FROM api_keys WHERE username = ? ORDER BY created_at DESC");
+                $stmt = $db->prepare("SELECT api_key, prefix, created_at, last_used_at FROM api_keys WHERE username = ? ORDER BY created_at DESC");
                 $stmt->bind_param("s", $username);
                 $stmt->execute();
                 $res = $stmt->get_result();
                 if ($res->num_rows > 0) {
                     while ($row = $res->fetch_object()) {
-                        $prefix = substr($row->api_key, 0, 8) . '...';
+                        $prefix = htmlspecialchars($row->prefix) . '...';
                         $created = $row->created_at;
                         $lastUsed = $row->last_used_at ? $row->last_used_at : 'Never';
                         echo "<tr>";

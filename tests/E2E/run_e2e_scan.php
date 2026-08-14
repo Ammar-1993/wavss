@@ -53,14 +53,13 @@ $csrf = $matches[1];
 
 $res = request('/scanner.php', [
     'csrf_token' => $csrf,
-    'urlToScan' => 'http://localhost/tests/E2E/target.php',
+    'urlToScan' => 'http://app/tests/E2E/target.php',
     'sqli' => 'sqli',
     'basqli' => 'basqli',
     'submit' => 'Start Scan'
 ]);
 
-if (preg_match('#beginScan\("http:\\\\/\\\\/localhost\\\\/tests\\\\/E2E\\\\/target\.php",\s*(\d+),#', $res, $matches) || 
-    preg_match('#beginScan\("http://localhost/tests/E2E/target\.php",\s*(\d+),#', $res, $matches)) {
+if (preg_match('/scanStream\.php\?testId=(\d+)/', $res, $matches)) {
     $testId = $matches[1];
     file_put_contents(__DIR__ . '/last_test_id.txt', $testId);
 } else {
@@ -68,14 +67,7 @@ if (preg_match('#beginScan\("http:\\\\/\\\\/localhost\\\\/tests\\\\/E2E\\\\/targ
     exit(1);
 }
 
-echo "5. Triggering backend scan process for Test ID $testId...\n";
-request('/scanner/begin_scan.php', [
-    'specifiedUrl' => 'http://localhost/tests/E2E/target.php',
-    'testId' => $testId,
-    'username' => $username,
-    'email' => $email,
-    'testCases' => ' sqli  basqli '
-]);
+echo "5. Waiting for background worker to pick up Job (Test ID $testId)...\n";
 
 echo "6. Polling for completion...\n";
 $maxAttempts = 120; // 4 minutes max wait
