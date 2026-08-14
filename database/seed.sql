@@ -72,44 +72,10 @@ INSERT INTO `vulnerabilities` (`id`, `name`, `description`, `solution`, `priorit
 
 -- Indexes for dumped tables
 ALTER TABLE `tests`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id` (`id`),
-  ADD UNIQUE KEY `id_3` (`id`),
-  ADD UNIQUE KEY `start_timestamp_2` (`start_timestamp`),
-  ADD UNIQUE KEY `id_5` (`id`),
-  ADD UNIQUE KEY `start_timestamp_4` (`start_timestamp`),
-  ADD UNIQUE KEY `id_7` (`id`),
-  ADD UNIQUE KEY `start_timestamp_6` (`start_timestamp`),
-  ADD KEY `id_2` (`id`),
-  ADD KEY `numUrlsFound` (`numUrlsFound`),
-  ADD KEY `num_requests_sent` (`num_requests_sent`),
-  ADD KEY `start_timestamp` (`start_timestamp`),
-  ADD KEY `finish_timestamp` (`finish_timestamp`),
-  ADD KEY `scan_finished` (`scan_finished`),
-  ADD KEY `id_4` (`id`),
-  ADD KEY `numUrlsFound_2` (`numUrlsFound`),
-  ADD KEY `num_requests_sent_2` (`num_requests_sent`),
-  ADD KEY `start_timestamp_3` (`start_timestamp`),
-  ADD KEY `finish_timestamp_3` (`finish_timestamp`),
-  ADD KEY `scan_finished_2` (`scan_finished`),
-  ADD KEY `id_6` (`id`),
-  ADD KEY `numUrlsFound_3` (`numUrlsFound`),
-  ADD KEY `num_requests_sent_3` (`num_requests_sent`),
-  ADD KEY `start_timestamp_5` (`start_timestamp`),
-  ADD KEY `finish_timestamp_5` (`finish_timestamp`),
-  ADD KEY `scan_finished_3` (`scan_finished`),
-  ADD KEY `id_8` (`id`),
-  ADD KEY `numUrlsFound_4` (`numUrlsFound`),
-  ADD KEY `num_requests_sent_4` (`num_requests_sent`),
-  ADD KEY `start_timestamp_7` (`start_timestamp`),
-  ADD KEY `finish_timestamp_7` (`finish_timestamp`),
-  ADD KEY `scan_finished_4` (`scan_finished`);
+  ADD KEY `testId` (`id`);
 
 ALTER TABLE `test_results`
-  ADD KEY `test_id` (`test_id`),
-  ADD KEY `test_id_2` (`test_id`),
-  ADD KEY `test_id_3` (`test_id`),
-  ADD KEY `test_id_4` (`test_id`);
+  ADD KEY `test_id` (`test_id`);
 
 ALTER TABLE `vulnerabilities`
   ADD PRIMARY KEY (`priority_num`),

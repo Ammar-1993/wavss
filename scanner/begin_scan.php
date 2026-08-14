@@ -18,32 +18,32 @@ require_once __DIR__ . '/../vendor/simplehtmldom/simplehtmldom/simple_html_dom.p
 require_once(__DIR__ . '/classes/httpclient-2024/http.php');
 
 //Include Entity Classes
-require_once($currentDir . 'classes/Form.php');
-require_once($currentDir . 'classes/InputField.php');
-require_once($currentDir . 'classes/Logger.php');
-require_once($currentDir . 'classes/PostOrGetObject.php');
-require_once($currentDir . 'classes/Vulnerability.php');
+require_once(__DIR__ . "/" . 'classes/Form.php');
+require_once(__DIR__ . "/" . 'classes/InputField.php');
+require_once(__DIR__ . "/" . 'classes/Logger.php');
+require_once(__DIR__ . "/" . 'classes/PostOrGetObject.php');
+require_once(__DIR__ . "/" . 'classes/Vulnerability.php');
 
 //Include Function Scripts
-require_once($currentDir . 'functions/commonFunctions.php');
-require_once($currentDir . 'functions/databaseFunctions.php');
-require_once($currentDir . 'functions/createPdfReport.php');
-require_once($currentDir . 'functions/emailPdfToUser.php');
-require_once($currentDir . 'functions/aiTriage.php');
+require_once(__DIR__ . "/" . 'functions/commonFunctions.php');
+require_once(__DIR__ . "/" . 'functions/databaseFunctions.php');
+require_once(__DIR__ . "/" . 'functions/createPdfReport.php');
+require_once(__DIR__ . "/" . 'functions/emailPdfToUser.php');
+require_once(__DIR__ . "/" . 'functions/aiTriage.php');
 
 //Include test scripts
-require_once($currentDir . 'tests/testForReflectedXSS.php');
-require_once($currentDir . 'tests/testForStoredXSS.php');
-require_once($currentDir . 'tests/testForSQLi.php');
-require_once($currentDir . 'tests/testDirectObjectRefs.php');
-require_once($currentDir . 'tests/testAuthenticationSQLi.php');
-require_once($currentDir . 'tests/testUnvalidatedRedirects.php');
-require_once($currentDir . 'tests/testDirectoryListingEnabled.php');
-require_once($currentDir . 'tests/testHttpBannerDisclosure.php');
-require_once($currentDir . 'tests/testAutoComplete.php');
-require_once($currentDir . 'tests/testSslCertificate.php');
-require_once($currentDir . 'tests/testSecurityHeaders.php');
-require_once($currentDir . 'tests/testSensitiveFileExposure.php');
+require_once(__DIR__ . "/" . 'tests/testForReflectedXSS.php');
+require_once(__DIR__ . "/" . 'tests/testForStoredXSS.php');
+require_once(__DIR__ . "/" . 'tests/testForSQLi.php');
+require_once(__DIR__ . "/" . 'tests/testDirectObjectRefs.php');
+require_once(__DIR__ . "/" . 'tests/testAuthenticationSQLi.php');
+require_once(__DIR__ . "/" . 'tests/testUnvalidatedRedirects.php');
+require_once(__DIR__ . "/" . 'tests/testDirectoryListingEnabled.php');
+require_once(__DIR__ . "/" . 'tests/testHttpBannerDisclosure.php');
+require_once(__DIR__ . "/" . 'tests/testAutoComplete.php');
+require_once(__DIR__ . "/" . 'tests/testSslCertificate.php');
+require_once(__DIR__ . "/" . 'tests/testSecurityHeaders.php');
+require_once(__DIR__ . "/" . 'tests/testSensitiveFileExposure.php');
 
 //Include PDF generator
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -53,7 +53,7 @@ function runScan($testId, $urlToScan, $username, $email, $testCases) {
 	global $currentDir;
 	
 	$log = new Logger();
-	$log->lfile($currentDir . 'logs/eventlogs');
+	$log->lfile(__DIR__ . "/" . 'logs/eventlogs');
 
 	$log->lwrite('Connecting to database');
 	$connectionFlag = connectToDb($db);

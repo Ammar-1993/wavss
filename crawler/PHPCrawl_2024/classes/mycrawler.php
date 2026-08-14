@@ -1,6 +1,5 @@
 <?php
-$currentDir = './';
-require_once($currentDir . '../scanner/functions/databaseFunctions.php');
+require_once(__DIR__ . '/../../../scanner/functions/databaseFunctions.php');
 
 class MyCrawler extends PHPCrawler 
 { 
