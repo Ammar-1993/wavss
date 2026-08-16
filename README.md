@@ -63,9 +63,9 @@ WAVSS is a comprehensive, automated web-based vulnerability scanner designed to 
 
 ---
 
-## Implemented Features (Phases 0 - 5)
+## Implemented Features (Phases 0 - 6)
 
-The WAVSS platform has undergone a massive modernization and security overhaul across six iterative phases:
+The WAVSS platform has undergone a massive modernization and security overhaul across seven iterative phases:
 
 ### Phase 0 & 1: Security Foundation & Code Quality
 - **Robust Authentication:** Argon2id password hashing with backward-compatible legacy upgrades, plus TOTP-based Two-Factor Authentication (2FA).
@@ -84,6 +84,10 @@ The WAVSS platform has undergone a massive modernization and security overhaul a
 - **AI-Assisted Triage:** Optional Gemini LLM integration to analyze scan findings, evaluate confidence scores, and append plain-language explanations.
 - **Data Visualization & Scheduling:** Client-side Chart.js dashboards for tracking historical vulnerability trends, alongside an integrated cron-driven scheduler for recurring scans.
 - **Expanded Test Suite:** Added active detection for Missing Security Headers and Sensitive File Exposure (e.g., `.env`, `.git`), featuring strict content signature verification.
+
+### Phase 6: Final Review & Integration
+- **Module Activation:** Fully activated the previously orphaned Security Headers and Sensitive File Exposure detection modules across the Web UI, Cron Scheduler, and REST API.
+- **2FA Stability:** Hardened the TOTP Two-Factor Authentication enrollment flow by ensuring all necessary cryptographic and image-generation libraries (PHP GD) are strictly enforced at the container level.
 
 ## Future Enhancements
 
