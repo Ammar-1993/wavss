@@ -62,7 +62,7 @@ if (!$scanInit['success']) {
 }
 
 $testId = $scanInit['testId'];
-$testCases = 'rxss sxss sqli basqli autoc idor dirlist bannerdis sslcert unredir emailpdf crawlurl ';
+$testCases = 'rxss sxss sqli basqli autoc idor dirlist bannerdis sslcert unredir emailpdf crawlurl secheaders fileexposure ';
 
 // Queue the scan job in the database
 $email = '';

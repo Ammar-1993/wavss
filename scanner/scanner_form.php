@@ -100,6 +100,14 @@ if (isset($_SESSION['username'])) {
 							<input class="form-check-input" type="checkbox" name="unredir" value="unredir" checked id="chk_unredir">
 							<label class="form-check-label" for="chk_unredir">Unvalidated Redirects</label>
 						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" name="secheaders" value="secheaders" checked id="chk_secheaders">
+							<label class="form-check-label" for="chk_secheaders">Missing Security Headers</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" name="fileexposure" value="fileexposure" checked id="chk_fileexposure">
+							<label class="form-check-label" for="chk_fileexposure">Sensitive File Exposure</label>
+						</div>
 					</div>
 				</div>
 				<p class="fw-bold mb-2">Other Options:</p>
@@ -132,6 +140,8 @@ if (isset($_SESSION['username'])) {
 		if (isset($_POST['bannerdis'])) $testCases .= $_POST['bannerdis'] . ' ';
 		if (isset($_POST['sslcert'])) $testCases .= $_POST['sslcert'] . ' ';
 		if (isset($_POST['unredir'])) $testCases .= $_POST['unredir'] . ' ';
+		if (isset($_POST['secheaders'])) $testCases .= $_POST['secheaders'] . ' ';
+		if (isset($_POST['fileexposure'])) $testCases .= $_POST['fileexposure'] . ' ';
 		if (isset($_POST['emailpdf'])) $testCases .= $_POST['emailpdf'] . ' ';
 		if (isset($_POST['crawlurl'])) $testCases .= $_POST['crawlurl'] . ' ';
 

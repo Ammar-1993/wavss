@@ -29,7 +29,7 @@ if (!$res || $res->num_rows === 0) {
 
 echo "Found " . $res->num_rows . " scans to execute.\n";
 
-$testCases = 'rxss sxss sqli basqli autoc idor dirlist bannerdis sslcert unredir emailpdf crawlurl ';
+$testCases = 'rxss sxss sqli basqli autoc idor dirlist bannerdis sslcert unredir emailpdf crawlurl secheaders fileexposure ';
 
 while ($row = $res->fetch_object()) {
     echo "Processing scan for URL: {$row->url} (User: {$row->username})\n";
