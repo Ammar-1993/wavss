@@ -96,22 +96,6 @@ The WAVSS platform has undergone a massive modernization and security overhaul a
   
 ---
 
-## Project Contributors and Supervision
-
-**Students:**  
-- Remas Talal Alkhathami 
-- Aryam Abdullah Alkhathami 
-- Lamees Abdullah Alshahrani  
-- Nada Hamad Alshahrani  
-- Manar Mohammed Alzahrani  
-- Fai Mohameed Almaawi  
-- Ghaida Turki Aljahmi  
-
-**Supervisor:**  
-- Dr. Muhammad Ayub Muhammad Khan  
-
----
-
 ## License
 
 This project is currently private. Please contact the maintainer for licensing inquiries.
