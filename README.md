@@ -49,52 +49,49 @@
 
 ```mermaid
 flowchart TD
-    subgraph Clients["1. Clients & Access Layer"]
-        UI["Web Portal (Bootstrap 5 & Chart.js)"]
-        API["Headless REST API (Bearer Token Auth)"]
-        Cron["Scheduled Scanner (CLI Cron Daemon)"]
+    subgraph Clients["1. Clients and Access Layer"]
+        UI["Web Portal - Bootstrap 5 and Chart.js"]
+        API["Headless REST API - Bearer Token Auth"]
+        Cron["Scheduled Scanner - CLI Cron Daemon"]
     end
 
-    subgraph Gateway["2. Security & Guardrails Gateway"]
-        Auth["Authentication (Argon2id + TOTP 2FA)"]
-        CSRF["CSRF Verification (hash_equals)"]
+    subgraph Gateway["2. Security and Guardrails Gateway"]
+        Auth["Authentication - Argon2id and TOTP 2FA"]
+        CSRF["CSRF Verification - hash_equals"]
         DomainCheck{"Domain Verification Check"}
-        RateLimit{"Rate Limiting & Concurrency Lock"}
+        RateLimit{"Rate Limiting and Concurrency Lock"}
     end
 
-    subgraph Orchestration["3. Execution & Asynchronous Queue"]
-        AppServer["Apache / PHP 8.2 Application"]
+    subgraph Orchestration["3. Execution and Asynchronous Queue"]
+        AppServer["Apache and PHP 8.2 Application"]
         JobsDB[("MariaDB: jobs Queue")]
-        Worker["CLI Worker Daemon (worker.php)"]
+        Worker["CLI Worker Daemon - worker.php"]
     end
 
-    subgraph Engine["4. Surface Mapping & DAST Testing Engine"]
-        Crawler["Crawler Engine (PHPCrawl)"]
-        Surface["Surface Extractor (Forms, Inputs, Query Params)"]
-        ScanManager["Scanner Orchestrator (begin_scan.php)"]
+    subgraph Engine["4. Surface Mapping and DAST Testing Engine"]
+        Crawler["Crawler Engine - PHPCrawl"]
+        Surface["Surface Extractor - Forms and Endpoints"]
+        ScanManager["Scanner Orchestrator - begin_scan.php"]
         
-        subgraph TestSuite["Dynamic Vulnerability Modules"]
-            direction LR
-            SQLi["SQL Injection & Auth Bypass"]
-            XSS["Cross-Site Scripting (Reflected & Stored)"]
-            SecHeaders["Missing Security Headers"]
-            FileExposure["Sensitive File Exposure"]
-            Misc["IDOR, Directory Listing, Redirects, SSL"]
-        end
+        SQLi["SQL Injection and Auth Bypass"]
+        XSS["Cross-Site Scripting - Reflected and Stored"]
+        SecHeaders["Missing Security Headers"]
+        FileExposure["Sensitive File Exposure"]
+        Misc["IDOR, Directory Listing, Redirects, SSL"]
     end
 
     subgraph Intelligence["5. AI-Assisted Triage Engine"]
-        Gemini["Google Gemini API (aiTriage.php)"]
-        Confidence["Confidence Scoring & Remediation Analysis"]
+        Gemini["Google Gemini API - aiTriage.php"]
+        Confidence["Confidence Scoring and Remediation Analysis"]
     end
 
-    subgraph Storage["6. Persistence & Multi-Format Outputs"]
+    subgraph Storage["6. Persistence and Multi-Format Outputs"]
         Database[("MariaDB 11 Database")]
-        PDF["Executive PDF Report (TCPDF)"]
+        PDF["Executive PDF Report - TCPDF"]
         JSONOut["Machine-Readable JSON"]
         HTMLOut["Interactive HTML Report"]
         TrendsView["Historical Trends Dashboard"]
-        Logs["Rotating Audit Logs (Monolog)"]
+        Logs["Rotating Audit Logs - Monolog"]
     end
 
     UI --> Auth
@@ -103,21 +100,31 @@ flowchart TD
     API --> DomainCheck
     Cron --> RateLimit
 
-    DomainCheck -->|Verified Domain or Localhost| RateLimit
-    DomainCheck -->|Unverified Domain| Blocked["Scan Blocked (HTTP 403 / Error)"]
-    RateLimit -->|Permitted| AppServer
-    RateLimit -->|Scan Active / In Cooldown| Throttle["Throttled / Scan Enqueued"]
+    DomainCheck -->|Verified Target| RateLimit
+    DomainCheck -->|Unverified Target| Blocked["Scan Blocked: HTTP 403"]
+    RateLimit -->|Allowed| AppServer
+    RateLimit -->|Active Scan or Cooldown| Throttle["Throttled: Scan Enqueued"]
 
-    AppServer -->|Enqueue Job (status: pending)| JobsDB
-    Worker -->|Poll & Claim Job (Row Lock)| JobsDB
+    AppServer -->|Enqueue Job: Status Pending| JobsDB
+    Worker -->|Claim Job via Row Lock| JobsDB
     Worker -->|Execute Scan| ScanManager
 
     ScanManager --> Crawler
     Crawler --> Surface
-    Surface --> TestSuite
-    TestSuite -->|Discovered Findings| Gemini
+    Surface --> SQLi
+    Surface --> XSS
+    Surface --> SecHeaders
+    Surface --> FileExposure
+    Surface --> Misc
+
+    SQLi --> Gemini
+    XSS --> Gemini
+    SecHeaders --> Gemini
+    FileExposure --> Gemini
+    Misc --> Gemini
+
     Gemini --> Confidence
-    Confidence -->|Triaged Results & AI Notes| Database
+    Confidence -->|Triaged Results and AI Notes| Database
 
     Database --> PDF
     Database --> JSONOut
